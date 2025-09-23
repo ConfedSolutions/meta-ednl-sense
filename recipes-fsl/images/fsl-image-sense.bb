@@ -18,13 +18,10 @@ IMAGE_FEATURES += " \
     hwcodecs \
     debug-tweaks \
     nfs-client \
-    tools-debug \
-    tools-testapps \
 "
 
 CORE_IMAGE_EXTRA_INSTALL += " \
 	packagegroup-core-full-cmdline \
-	packagegroup-variscite-imx-security \
 	packagegroup-sense-devel \
 	packagegroup-sense-php \
 	packagegroup-sense-python \

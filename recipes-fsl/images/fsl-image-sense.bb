@@ -28,10 +28,6 @@ CORE_IMAGE_EXTRA_INSTALL += " \
 	packagegroup-sense-network \
 "
 
-CORE_IMAGE_EXTRA_INSTALL:append:mx9-nxp-bsp = "\
-    packagegroup-variscite-swupdate \
-"
-
 systemd_disable_vt () {
     rm ${IMAGE_ROOTFS}${sysconfdir}/systemd/system/getty.target.wants/getty@tty*.service
 }

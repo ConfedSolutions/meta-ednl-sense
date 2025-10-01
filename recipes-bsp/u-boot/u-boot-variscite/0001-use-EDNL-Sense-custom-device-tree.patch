@@ -1,15 +1,16 @@
-From 670f128bf87c7d9d23c07ad8ae12b4232bfe5914 Mon Sep 17 00:00:00 2001
+From 51b53b9b176ffb289efc27a0385195c885e45773 Mon Sep 17 00:00:00 2001
 From: "N. van IJzendoorn" <nick.vanijzendoorn@confed.eu>
-Date: Fri, 19 Sep 2025 12:45:49 +0000
-Subject: [PATCH] Add support for the Sense v4
+Date: Wed, 1 Oct 2025 07:39:14 +0000
+Subject: [PATCH] use EDNL Sense custom device tree
 
 ---
  arch/arm/dts/Makefile                        |   1 +
- arch/arm/dts/imx91-var-som-sense-u-boot-dtsi | 216 ++++++++++++++++
+ arch/arm/dts/imx91-var-som-sense-u-boot.dtsi | 216 ++++++++++++++++
  arch/arm/dts/imx91-var-som-sense.dts         | 254 +++++++++++++++++++
  configs/imx91_var_som_sense_defconfig        | 190 ++++++++++++++
- 4 files changed, 661 insertions(+)
- create mode 100644 arch/arm/dts/imx91-var-som-sense-u-boot-dtsi
+ include/configs/imx91_var_som.h              |   2 +-
+ 5 files changed, 662 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm/dts/imx91-var-som-sense-u-boot.dtsi
  create mode 100644 arch/arm/dts/imx91-var-som-sense.dts
  create mode 100644 configs/imx91_var_som_sense_defconfig
 
@@ -703,6 +704,19 @@ index 00000000000..269413effa5
 +CONFIG_LZO=y
 +CONFIG_BZIP2=y
 +CONFIG_SPL_LZO=y
+diff --git a/include/configs/imx91_var_som.h b/include/configs/imx91_var_som.h
+index c8714d20c38..950d2c589d6 100644
+--- a/include/configs/imx91_var_som.h
++++ b/include/configs/imx91_var_som.h
+@@ -58,7 +58,7 @@
+ 	"cntr_file=os_cntr_signed.bin\0" \
+ 	"boot_fit=no\0" \
+ 	"bootdir=/boot\0" \
+-	"fdt_file=undefined\0" \
++	"fdt_file=imx91-var-som-sense.dtb\0" \
+ 	"bootm_size=0x10000000\0" \
+ 	"mmcdev=" __stringify(CONFIG_SYS_MMC_ENV_DEV)"\0" \
+ 	"mmcpart=1\0" \
 -- 
 2.44.1
 

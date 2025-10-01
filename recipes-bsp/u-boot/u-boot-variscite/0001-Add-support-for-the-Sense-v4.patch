@@ -25,11 +25,11 @@ index 2f11fb86164..97b6ec7dc97 100644
  	imx91-var-dart-dt8mcustomboard.dtb \
  	imx93-11x11-evk.dtb \
  	imx93-11x11-evk-pmic-pf0900.dtb \
-diff --git a/arch/arm/dts/imx91-var-som-sense-u-boot-dtsi b/arch/arm/dts/imx91-var-som-sense-u-boot-dtsi
+diff --git a/arch/arm/dts/imx91-var-som-sense-u-boot.dtsi b/arch/arm/dts/imx91-var-som-sense-u-boot.dtsi
 new file mode 100644
 index 00000000000..3aad2a0484b
 --- /dev/null
-+++ b/arch/arm/dts/imx91-var-som-sense-u-boot-dtsi
++++ b/arch/arm/dts/imx91-var-som-sense-u-boot.dtsi
 @@ -0,0 +1,216 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*

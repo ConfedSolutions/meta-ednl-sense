@@ -1,17 +1,12 @@
-# Copyright (C) 2015 Freescale Semiconductor
+# Copyright (C) 2025 Confed Solutions
 # Released under the MIT license (see COPYING.MIT for the terms)
 
-DESCRIPTION = "Freescale Image to validate i.MX machines. \
-This image contains everything used to test i.MX machines including GUI, \
-demos and lots of applications. This creates a very large image, not \
-suitable for production."
+DESCRIPTION = "Development image for the sense with extended debug support. And empty root password."
 LICENSE = "MIT"
 
 inherit core-image
 
-### WARNING: This image is NOT suitable for production use and is intended
-###          to provide a way for users to reproduce the image used during
-###          the validation process of i.MX BSP releases.
+### WARNING: This image is NOT suitable for production since there is no root password set
 
 IMAGE_FEATURES += " \
     ssh-server-openssh \

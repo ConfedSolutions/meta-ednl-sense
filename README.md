@@ -37,8 +37,13 @@ MACHINE=imx91-var-som-sense DISTRO=fsl-imx-fb source var-setup-release.sh -b bui
 echo 'BBLAYERS += "${BSPDIR}/sources/meta-ednl-sense"' >> conf/bblayers.conf
 ```
 
-# build the base image
+# build the development image
 ```
-bitbake fsl-image-sense
+bitbake fsl-image-sense-devel
+```
+
+# build the production image
+```
+bitbake fsl-image-sense-prod
 ```
 

@@ -6,6 +6,7 @@ inherit packagegroup
 
 PACKAGES = "\
     ${PN}-devel \
+    ${PN}-fs \
     ${PN}-python \
     ${PN}-php \
     ${PN}-network \
@@ -36,6 +37,10 @@ RDEPENDS:${PN}-devel = "\
     screen \
     var-mii \
     zstd \
+"
+
+RDEPENDS:${PN}-fs = "\
+    partition-disk \
 "
 
 RDEPENDS:${PN}-python = "\

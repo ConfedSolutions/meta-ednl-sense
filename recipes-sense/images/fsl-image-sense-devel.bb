@@ -18,9 +18,11 @@ IMAGE_FEATURES += " \
 CORE_IMAGE_EXTRA_INSTALL += " \
 	packagegroup-core-full-cmdline \
 	packagegroup-sense-devel \
+	packagegroup-sense-fs \
 	packagegroup-sense-php \
 	packagegroup-sense-python \
 	packagegroup-sense-network \
+	packagegroup-variscite-swupdate \
 "
 
 systemd_disable_vt () {

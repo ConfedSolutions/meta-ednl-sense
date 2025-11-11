@@ -1,0 +1,12 @@
+[Unit]
+Description=Configure the running disk for SWupdate service
+DefaultDependencies=no
+
+[Service]
+Type=notify
+NotifyAccess=all
+ExecStart=/usr/sbin/partition-disk
+
+[Install]
+WantedBy=sysinit.target
+

@@ -14,8 +14,10 @@ IMAGE_FEATURES += " \
 "
 
 CORE_IMAGE_EXTRA_INSTALL += " \
+	packagegroup-sense-fs \
 	packagegroup-sense-php \
 	packagegroup-sense-python \
+	packagegroup-variscite-swupdate \
 "
 
 # Set the root password to 'admin' and add the 'confed' user with password 'confed'

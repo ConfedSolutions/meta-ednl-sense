@@ -1,4 +1,4 @@
-DESCRIPTION = "Example compound image for Variscite boards"
+DESCRIPTION = "Firmware update image"
 SECTION = ""
 
 # Note: sw-description is mandatory
@@ -13,7 +13,7 @@ LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
 
 # VAR_SWUPDATE_TARGET_IMAGE: Set to primary image packaged in .swu file
-VAR_SWUPDATE_TARGET_IMAGE ??= "var-image-sense-swupdate"
+VAR_SWUPDATE_TARGET_IMAGE ??= "fsl-image-sense-prod"
 # VAR_SWUPDATE_TARGET_IMAGE_FSTYPE: Set to primary image format/extension (i.e. .tar.gz, .tar.zst, etc.)
 VAR_SWUPDATE_TARGET_IMAGE_FSTYPE = ".tar.zst"
 

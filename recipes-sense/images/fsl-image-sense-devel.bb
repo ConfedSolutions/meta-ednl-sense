@@ -18,9 +18,10 @@ IMAGE_FEATURES += " \
 CORE_IMAGE_EXTRA_INSTALL += " \
 	packagegroup-core-full-cmdline \
 	packagegroup-sense-devel \
-	packagegroup-sense-fs \
+	packagegroup-sense-update \
 	packagegroup-sense-php \
 	packagegroup-sense-python \
+	packagegroup-sense-modem \
 	packagegroup-sense-network \
 	packagegroup-variscite-swupdate \
 "

@@ -6,9 +6,10 @@ inherit packagegroup
 
 PACKAGES = "\
     ${PN}-devel \
-    ${PN}-fs \
+    ${PN}-update \
     ${PN}-python \
     ${PN}-php \
+    ${PN}-modem \
     ${PN}-network \
 "
 
@@ -39,8 +40,12 @@ RDEPENDS:${PN}-devel = "\
     zstd \
 "
 
-RDEPENDS:${PN}-fs = "\
+RDEPENDS:${PN}-update = "\
     partition-disk \
+    swupdate \
+    swupdate-www \
+    kernel-image \
+    kernel-devicetree \
 "
 
 RDEPENDS:${PN}-python = "\
@@ -53,6 +58,10 @@ RDEPENDS:${PN}-python = "\
 RDEPENDS:${PN}-php = "\
     php \
     php-cli \
+"
+
+RDEPENDS:${PN}-modem = "\
+    modem-power \
 "
 
 RDEPENDS:${PN}-network = "\

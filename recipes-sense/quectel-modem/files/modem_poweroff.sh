@@ -1,13 +1,13 @@
 #!/usr/bin/env sh
 
 # check if the modem is powered on by checking if it's USB serial interface available
-if [ -e /dev/ttyUSB2 ]; then
+if [ -e /dev/ttymdmAT1 ]; then
 	echo "Modem powered on"
 	
 	echo "- TODO - Power off modem via GPIO pin"
 	
 	# wait for the modem to power off
-	while [ -e /dev/ttyUSB2 ]; do
+	while [ -e /dev/ttymdmAT1 ]; do
 		echo -n .
 		sleep 1
 	done

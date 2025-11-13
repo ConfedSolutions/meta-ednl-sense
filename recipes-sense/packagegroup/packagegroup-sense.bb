@@ -61,7 +61,7 @@ RDEPENDS:${PN}-php = "\
 "
 
 RDEPENDS:${PN}-modem = "\
-    modem-power \
+    quectel-modem \
 "
 
 RDEPENDS:${PN}-network = "\

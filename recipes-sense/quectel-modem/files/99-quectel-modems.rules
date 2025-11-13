@@ -1,0 +1,22 @@
+# This file defines udev rules for Quectel USB modems. It gives the modem connect to the 
+# USB host peripheral 1 a dedicated `/dev/ttymdm*` device nodes for the serial interfaces 
+# and gives the cdc_ether adapter an `mobile` ethernet interface name.
+
+# Copyright (c) 2025 Confed Solutions
+
+ACTION=="remove", GOTO="quectel_modems_end"
+
+# Quectel *
+#  ttyUSB0 (if #0): QCDM/DIAG port
+#  ttyUSB1 (if #1): GPS data port
+#  ttyUSB2 (if #2): AT primary port
+#  ttyUSB3 (if #3): AT secondary port
+SUBSYSTEMS=="usb", ATTRS{busnum}=="1", ATTRS{idVendor}=="2c7c", ENV{ID_USB_INTERFACE_NUM}=="00", SUBSYSTEM=="tty", SYMLINK+="ttymdmQCDM"
+SUBSYSTEMS=="usb", ATTRS{busnum}=="1", ATTRS{idVendor}=="2c7c", ENV{ID_USB_INTERFACE_NUM}=="01", SUBSYSTEM=="tty", SYMLINK+="ttymdmGPS"
+SUBSYSTEMS=="usb", ATTRS{busnum}=="1", ATTRS{idVendor}=="2c7c", ENV{ID_USB_INTERFACE_NUM}=="02", SUBSYSTEM=="tty", SYMLINK+="ttymdmAT1"
+SUBSYSTEMS=="usb", ATTRS{busnum}=="1", ATTRS{idVendor}=="2c7c", ENV{ID_USB_INTERFACE_NUM}=="03", SUBSYSTEM=="tty", SYMLINK+="ttymdmAT2"
+
+SUBSYSTEMS=="usb", ATTRS{busnum}=="1", ATTRS{idVendor}=="2c7c", SUBSYSTEM=="net", NAME="mobile"
+
+LABEL="quectel_modems_end"
+

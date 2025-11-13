@@ -1,14 +1,14 @@
-From c3fe476959f8135e14d1cee0bc7abf91cdd83f99 Mon Sep 17 00:00:00 2001
+From 84caf48d0c70cc7c9f634f4db04dbba15587135a Mon Sep 17 00:00:00 2001
 From: "N. van IJzendoorn" <nick.vanijzendoorn@confed.eu>
-Date: Fri, 19 Sep 2025 09:07:10 +0000
+Date: Thu, 13 Nov 2025 16:19:53 +0100
 Subject: [PATCH] Add initial DTS for the Sense v4 running on the Symphony
  board
 
 ---
  arch/arm64/boot/dts/freescale/Makefile        |   1 +
  .../dts/freescale/imx91-var-som-sense.dts     |  13 +
- .../dts/freescale/imx91-var-som-sense.dtsi    | 540 ++++++++++++++++++
- 3 files changed, 554 insertions(+)
+ .../dts/freescale/imx91-var-som-sense.dtsi    | 687 ++++++++++++++++++
+ 3 files changed, 701 insertions(+)
  create mode 100644 arch/arm64/boot/dts/freescale/imx91-var-som-sense.dts
  create mode 100644 arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi
 
@@ -45,10 +45,10 @@ index 000000000000..4343d2319bae
 +};
 diff --git a/arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi b/arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi
 new file mode 100644
-index 000000000000..a1a9321f2764
+index 000000000000..5932f7147232
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi
-@@ -0,0 +1,540 @@
+@@ -0,0 +1,687 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright 2024 NXP
@@ -208,13 +208,151 @@ index 000000000000..a1a9321f2764
 +	status = "okay";
 +};
 +
++&gpio1 {
++	gpio-line-names = "I2C1_SCL",
++		"I2C1_SDA",
++		"I2C2_SCL",
++		"I2C2_SDA",
++		"UART1_RXD",
++		"UART1_TXD",
++		"UART2_RXD",
++		"UART2_TXD",
++		"8 - CAN1_TX (PDM_CLK)",
++		"9 - CAN1_RX (PDM_BIT_STREAM0)",
++		"10 - USB1_ID (PDM_BIT_STREAM1)",
++		"11 - SAI1_TXFS",
++		"12 - SAI1_TXC",
++		"13 - SAI1_TXD0",
++		"14 - SAI1_RXD0",
++		"15 - WDOG_ANY",
++		"16 - NC",
++		"17 - NC",
++		"18 - NC",
++		"19 - NC",
++		"20 - NC",
++		"21 - NC",
++		"22 - NC",
++		"23 - NC",
++		"24 - NC",
++		"25 - NC",
++		"26 - NC",
++		"27 - NC",
++		"28 - NC",
++		"29 - NC",
++		"30 - NC",
++		"31 - NC";
++};
++
 +&gpio2 {
++	gpio-line-names = "0 - DISPLAY_CS",
++		"1 - DISPLAY_MISO",
++		"2 - DISPLAY_MOSI",
++		"3 - DISPLAY_CLK",
++		"4 - UART6_TX",
++		"5 - UART6_RX",
++		"6 - DISPLAY_DATA/CMD",
++		"7 - UART6_RTS",
++		"8 - UART7_TX",
++		"9 - UART7_RX",
++		"10 - LED2",
++		"11 - UART7_RTS",
++		"12",
++		"13",
++		"14",
++		"15",
++		"16 - UART6_CABLE_FAULT",
++		"17",
++		"18 - LED5",
++		"19 - UART6_RS485/RS232_N",
++		"20 - DISPLAY_BL_PWM",
++		"21 - LED3",
++		"22",
++		"23",
++		"24 - UART6_HALF/FULL_N",
++		"25 - GPI1",
++		"26 - LED4",
++		"27 - UART6_TERM",
++		"28",
++		"29",
++		"30",
++		"31";
++
 +	cam_buf_hog {
 +		gpio-hog;
 +		gpios = <17 GPIO_ACTIVE_HIGH>;
 +		output-low;
 +		line-name = "cam_buf_en";
 +	};
++};
++
++&gpio3 {
++	gpio-line-names = "0 - PHY_RST_N (SD2_CD_B (SD))",
++		"1 - SD2_CLK (SD)",
++		"2 - SD2_CMD (SD)",
++		"3 - CAN2_TX (SD2_DATA0 (SD))",
++		"4 - CAN2_RX (SD2_DATA1 (SD))",
++		"5 - SD2_DATA2 (SD)",
++		"6 - UART6_FD_TX_TERM (SD2_DATA3 (SD))",
++		"7 - SD2_RESET_B (SD)",
++		"8 - SD1_CLK (eMMC)",
++		"9 - SD1_CMD (eMMC)",
++		"10 - SD1_DATA0 (eMMC)",
++		"11 - SD1_DATA1 (eMMC)",
++		"12 - SD1_DATA2 (eMMC)",
++		"13 - SD1_DATA3 (eMMC)",
++		"14 - SD1_DATA4 (eMMC)",
++		"15 - SD1_DATA5 (eMMC)",
++		"16 - SD1_DATA6 (eMMC)",
++		"17 - SD1_DATA7 (eMMC)",
++		"18 - SD1_STROBE (eMMC)",
++		"19 - SD2_VSELECT",
++		"20 - SD3_CLK",
++		"21 - SD3_CMD",
++		"22 - SD3_DATA0",
++		"23 - CAN1_TERM (SD3_DATA1)",
++		"24 - MDIO_INT (SD3_DATA2)",
++		"25 - WL_RESET (SD3_DATA3)",
++		"26 - CAN2_TERM (CCM_CLKO1)",
++		"27 - CCM_CLKO2",
++		"28 - GPO1 (DAP_TDI)",
++		"29 - DAP_TMS_SWDIO",
++		"30 - GPO2 (DAP_TCLK_SWCLK)",
++		"31 - DAP_TDO_TRACESWO";
++};
++
++&gpio4 {
++	gpio-line-names = "ENET1_MDC",
++		"ENET1_MDIO",
++		"ENET1_TD3",
++		"ENET1_TD2",
++		"ENET1_TD1",
++		"ENET1_TD0",
++		"ENET1_TX_CTL",
++		"ENET1_TXC",
++		"ENET1_RX_CTL",
++		"ENET1_RXC",
++		"ENET1_RD0",
++		"ENET1_RD1",
++		"ENET1_RD2",
++		"ENET1_RD3",
++		"14 - NC",
++		"15 - BT_ENABLE",
++		"ENET2_TD3",
++		"ENET2_TD2",
++		"ENET2_TD1",
++		"ENET2_TD0",
++		"ENET2_TX_CTL",
++		"ENET2_TXC",
++		"ENET2_RX_CTL",
++		"ENET2_RXC",
++		"ENET2_RD0",
++		"ENET2_RD1",
++		"ENET2_RD2",
++		"ENET2_RD3",
++		"CCM_CLKO3",
++		"CCM_CLKO4",
++		"30 - NC",
++		"31 - NC";
 +};
 +
 +&iomuxc {
@@ -465,6 +603,15 @@ index 000000000000..a1a9321f2764
 +	status = "okay";
 +
 +	pca9534: gpio@20 {
++		gpio-line-names = "PCA9534-1.0",
++			"PCA9534-1.1",
++			"PCA9534-1.2",
++			"PCA9534-1.3",
++			"PCA9534-1.4",
++			"PCA9534-1.5",
++			"PCA9534-1.6",
++			"PCA9534-1.7";
++
 +		status = "okay";
 +		compatible = "nxp,pca9534";
 +		reg = <0x20>;
@@ -590,5 +737,5 @@ index 000000000000..a1a9321f2764
 +	no-mmc;
 +};
 -- 
-2.44.1
+2.43.0
 

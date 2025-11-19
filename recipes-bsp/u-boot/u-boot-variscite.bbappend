@@ -7,5 +7,5 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/${BPN}:"
 FILESEXTRAPATHS:prepend := "${THISDIR}/u-boot-fw-utils:"
 
 SRC_URI += " \
-        file://0001-use-EDNL-Sense-custom-device-tree.patch  \
+        file://0001-add-sense-support.patch  \
 "

@@ -5,11 +5,8 @@ if [ ! -e /dev/ttymdmAT1 ]; then
 	echo "Modem powered off"
 	
 	echo "Power on modem via PWRKEY pin"
-	gpioset -z -c 0 22=1 # TODO use proper gpio port and pin
-	sleep 0.5
-	killall gpioset
-	gpioset -z -c 0 22=0 # TODO use proper gpio port and pin
-	killall gpioset
+	gpioset -p 500ms -t 0 -c 0 22=1 # TODO use proper gpio port and pin
+	gpioset -p 500ms -t 0 -c 0 22=0 # TODO use proper gpio port and pin
 	
 	# wait for the modem to have booted
 	while [ ! -e /dev/ttymdmAT1 ]; do

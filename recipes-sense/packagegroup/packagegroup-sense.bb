@@ -28,6 +28,7 @@ RDEPENDS:${PN}-devel = "\
     iperf3 \
     kmod \
     libgpiod \
+    libgpiod-dev \
     libgpiod-tools \
     libgpiodcxx \
     minicom \
@@ -38,6 +39,7 @@ RDEPENDS:${PN}-devel = "\
     screen \
     var-mii \
     zstd \
+    xz \
 "
 
 RDEPENDS:${PN}-update = "\
@@ -52,6 +54,7 @@ RDEPENDS:${PN}-python = "\
     python3 \
     python3-modules \
     python3-pyserial \
+    python3-gpiod \
     python3-pip \
 "
 

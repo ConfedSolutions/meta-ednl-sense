@@ -19,6 +19,7 @@ CORE_IMAGE_EXTRA_INSTALL += " \
 	packagegroup-core-buildessential \
 	packagegroup-core-full-cmdline \
 	packagegroup-sense-devel \
+	packagegroup-sense-display \
 	packagegroup-sense-php \
 	packagegroup-sense-python \
 	packagegroup-sense-modem \

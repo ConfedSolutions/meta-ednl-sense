@@ -6,6 +6,7 @@ inherit packagegroup
 
 PACKAGES = "\
     ${PN}-devel \
+    ${PN}-display \
     ${PN}-update \
     ${PN}-python \
     ${PN}-php \
@@ -40,6 +41,10 @@ RDEPENDS:${PN}-devel = "\
     var-mii \
     zstd \
     xz \
+"
+
+RDEPENDS:${PN}-display = "\
+    winstar-display \
 "
 
 RDEPENDS:${PN}-update = "\

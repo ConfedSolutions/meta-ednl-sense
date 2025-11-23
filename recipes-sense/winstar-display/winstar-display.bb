@@ -10,7 +10,7 @@ SRC_URI = "git://github.com/ConfedSolutions/winstar-display-sense;protocol=https
 	file://hallo-wereld-linux.png \
 "
 
-SRCREV = "f3a42fc4d630781e13fbfae7d8be6bb0ddaa7b15"
+SRCREV = "40d1fa1f3afbb5c9cac465ed083f1d35f1e78935"
 
 S = "${WORKDIR}/git"
 

@@ -22,6 +22,7 @@ CORE_IMAGE_EXTRA_INSTALL += " \
 	packagegroup-sense-display \
 	packagegroup-sense-php \
 	packagegroup-sense-python \
+	packagegroup-sense-update \
 	packagegroup-sense-modem \
 	packagegroup-sense-network \
 	packagegroup-variscite-swupdate \

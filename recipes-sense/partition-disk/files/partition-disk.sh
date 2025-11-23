@@ -9,9 +9,9 @@ if [ ! -e ${DISK}p3 ]; then
 	MESSAGE="Data partition not found, creating proper partition table"
 	
 	(echo d; \
-	 echo n; echo p; echo 1; echo 16384; echo 2113535; \
-	 echo n; echo p; echo 2; echo 2113536; echo 4210687; \
-	 echo n; echo p; echo 3; echo 4210688; echo ""; \
+	 echo n; echo p; echo 1; echo 16384; echo 4210687; \
+	 echo n; echo p; echo 2; echo 4210688; echo 8404991; \
+	 echo n; echo p; echo 3; echo 8404992; echo ""; \
 	 echo p; echo w) | fdisk -u ${DISK}
 	
 	sync; sleep 1;

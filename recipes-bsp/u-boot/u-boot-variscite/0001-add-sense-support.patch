@@ -759,7 +759,7 @@ index c8714d20c38..b04c745ba18 100644
  		${cma_size} cma_name=linux,cma \
 -		root=/dev/mmcblk${mmcblk}p${mmcpart} rootwait rw\0 " \
 +		root=/dev/mmcblk${mmcblk}p${mmcpart} rootwait rw \
-+		spidev.bufsiz=32768\0 " \
++		spidev.bufsiz=16384\0 " \
  	"bootenv=uEnv.txt\0" \
  	"loadbootscript=load mmc ${mmcdev}:${mmcpart} ${loadaddr} ${bootdir}/${script};\0" \
  	"bootscript=echo Running bootscript from mmc ...; " \

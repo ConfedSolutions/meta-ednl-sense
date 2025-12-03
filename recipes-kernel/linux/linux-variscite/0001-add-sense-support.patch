@@ -1,13 +1,13 @@
-From 567ccb351326e554d761c90466bff0da6efee099 Mon Sep 17 00:00:00 2001
+From e4fd8eca652c5a7b456dde9691ccc1e9fecff908 Mon Sep 17 00:00:00 2001
 From: "N. van IJzendoorn" <nick.vanijzendoorn@confed.eu>
-Date: Wed, 19 Nov 2025 09:11:18 +0100
+Date: Wed, 3 Dec 2025 11:26:54 +0100
 Subject: [PATCH] add sense support
 
 ---
  arch/arm64/boot/dts/freescale/Makefile        |   1 +
  .../dts/freescale/imx91-var-som-sense.dts     |  13 +
- .../dts/freescale/imx91-var-som-sense.dtsi    | 689 ++++++++++++++++++
- 3 files changed, 703 insertions(+)
+ .../dts/freescale/imx91-var-som-sense.dtsi    | 692 ++++++++++++++++++
+ 3 files changed, 706 insertions(+)
  create mode 100644 arch/arm64/boot/dts/freescale/imx91-var-som-sense.dts
  create mode 100644 arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi
 
@@ -44,10 +44,10 @@ index 000000000000..4343d2319bae
 +};
 diff --git a/arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi b/arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi
 new file mode 100644
-index 000000000000..f8e1ba207fd2
+index 000000000000..d80257973edc
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi
-@@ -0,0 +1,689 @@
+@@ -0,0 +1,692 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright 2024 NXP
@@ -648,13 +648,16 @@ index 000000000000..f8e1ba207fd2
 +	pinctrl-names = "default";
 +	pinctrl-0 = <&pinctrl_lpspi6>;
 +	cs-gpios = <&gpio2 0 GPIO_ACTIVE_LOW>;
++	assigned-clocks = <&clk IMX91_CLK_LPSPI6>;
++	assigned-clock-parents = <&clk IMX91_CLK_SYS_PLL_PFD1_DIV2>;
++	assigned-clock-rates = <50000000>;
 +	status = "okay";
 +
 +	/* Test SPI device */
 +	spidev@0 {
 +		reg = <0>;
 +		compatible = "var,spidev";
-+		spi-max-frequency = <1000000>;
++		spi-max-frequency = <24000000>;
 +		status = "okay";
 +	};
 +};

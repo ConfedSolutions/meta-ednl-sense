@@ -1,0 +1,8 @@
+---
+app: 'ednl-gatestate-module-controller'
+nice: 19
+appshort: 'gmc'
+version: 'latest'
+forever:
+  command: '/usr/bin/php'
+target: 'production'

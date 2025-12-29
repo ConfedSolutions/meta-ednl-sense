@@ -1,0 +1,26 @@
+##
+# App ednl-sense-module-controller
+#
+---
+- hosts: localbbb
+  remote_user: root
+  become: true
+
+  tags:
+    - devupdate
+    - devupdate-smc
+
+  vars_files:
+    - ../vars/ednl-sense-module-controller.yml
+
+  tasks:
+#    - include: ../tasks/app-startupdate.yml
+    - include_tasks: ../tasks/exarun.yml
+    - include_tasks: ../tasks/app-unzip.yml
+    - include_tasks: ../tasks/smc-activatesettings.yml
+    - include_tasks: ../tasks/app-readbuildinfo.yml
+    - include_tasks: ../tasks/app-readpackageinfo.yml
+    - include_tasks: ../tasks/app-install.yml
+    - include_tasks: ../tasks/app-activate.yml
+    - include_tasks: ../tasks/app-cleanup.yml
+#    - include_tasks: ../tasks/app-stopupdate.yml

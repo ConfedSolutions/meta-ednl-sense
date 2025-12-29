@@ -1,0 +1,6 @@
+---
+- debug:
+    msg: cd /home/app/sense/{{ app }}/current/; /usr/bin/nohup /usr/bin/nice -n {{ nice }} ./{{ apppackageinfo.main }} -dev_smc {{ dev_smc }} -dev_gmc {{ dev_gmc }} -dev_smp {{ dev_smp }} -dev_smps {{ dev_smps }} -dev_smsp {{ dev_smsp }} -dev_dmc {{ dev_dmc }} -target {{ target}} </dev/null >/dev/null 2>&1 &
+
+- name: App - starting updateded Deltamaker
+  shell: cd /home/app/sense/{{ app }}/current/; /usr/bin/nohup /usr/bin/nice -n {{ nice }} ./{{ apppackageinfo.main }} -dev_smc {{ dev_smc }} -dev_gmc {{ dev_gmc }} -dev_smp {{ dev_smp }} -dev_smps {{ dev_smps }} -dev_smsp {{ dev_smsp }} -dev_dmc {{ dev_dmc }} -target {{ target}} </dev/null >/dev/null 2>&1 &

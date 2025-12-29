@@ -1,0 +1,13 @@
+#Ansible Playbook for Install apps send trough deltaupdate
+---
+
+  - import_playbook: playbooks/sense-ect.yml
+  - import_playbook: playbooks/sense-ew.yml
+  - import_playbook: playbooks/sense-gmc.yml
+  - import_playbook: playbooks/sense-smc.yml
+  - import_playbook: playbooks/sense-smh.yml
+  - import_playbook: playbooks/sense-smhc.yml
+  - import_playbook: playbooks/sense-smps.yml
+  - import_playbook: playbooks/sense-smp.yml
+  - import_playbook: playbooks/ednl-dmc.yml
+  - import_playbook: playbooks/sense-smsp.yml

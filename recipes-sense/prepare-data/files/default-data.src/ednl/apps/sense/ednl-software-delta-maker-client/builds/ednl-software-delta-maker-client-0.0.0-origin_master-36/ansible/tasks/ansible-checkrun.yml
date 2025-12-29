@@ -1,0 +1,7 @@
+---
+# Ansible-Check Run
+- name: Ansible Check Run
+  action: include_vars {{ item }}
+  with_first_found:
+   - "/etc/ednl/ansible.yml"
+   - "/home/app/sense/ednl-software-delta-maker-client/current/ansible/vars/ansible.yml"

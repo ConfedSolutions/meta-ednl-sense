@@ -1,0 +1,11 @@
+---
+- name: Assures {{ static_files_location }} dir exists
+  file: path={{ static_files_location }} state=directory
+
+- name: App - Current symlink Local
+  action: file state=link path=/home/app/sense/{{ app }}/current src="builds/{{ appbuildinfo.name }}-{{ appbuildinfo.version }}-{{ appbuildinfo.branch | replace('/','_') }}-{{ appbuildinfo.build }}" force=yes
+  when: lookup('vars', 'dev_' + appshort) == 'n'
+
+- name: App - Current symlink Dev
+  action: file state=link path="/home/app/sense/{{ app }}/current" src="/home/app/sense/{{ app }}/dev" force=yes
+  when: lookup('vars', 'dev_' + appshort) == 'y'

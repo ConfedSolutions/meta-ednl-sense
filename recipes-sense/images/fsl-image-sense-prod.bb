@@ -8,17 +8,21 @@ inherit extrausers
 
 inherit core-image
 
+do_rootfs[network] = "1"
+
 IMAGE_FEATURES += " \
     ssh-server-openssh \
     hwcodecs \
 "
 
 CORE_IMAGE_EXTRA_INSTALL += " \
+  packagegroup-sense-base \
 	packagegroup-sense-display \
 	packagegroup-sense-update \
 	packagegroup-sense-php \
 	packagegroup-sense-python \
 	packagegroup-sense-modem \
+  packagegroup-sense-network \
 	packagegroup-variscite-swupdate \
 "
 

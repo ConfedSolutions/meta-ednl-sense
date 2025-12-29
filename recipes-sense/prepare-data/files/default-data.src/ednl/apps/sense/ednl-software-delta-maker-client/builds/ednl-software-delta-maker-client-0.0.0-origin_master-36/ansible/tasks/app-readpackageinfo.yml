@@ -1,0 +1,11 @@
+---
+- name: App - Read Package Info
+  action: command cat /home/app/sense/{{ app }}/tmp/package.json
+  register: result
+
+- name: App - Read Package Info - Process json
+  set_fact:
+    apppackageinfo: "{{ result.stdout | from_json }}"
+
+- name: App - Show Package Info
+  action: debug var=apppackageinfo

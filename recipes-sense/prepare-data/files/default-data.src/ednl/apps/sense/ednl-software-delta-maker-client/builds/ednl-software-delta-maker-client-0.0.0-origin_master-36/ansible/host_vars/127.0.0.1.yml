@@ -1,0 +1,7 @@
+---
+ansible_python_interpreter: '/usr/bin/python3'
+apps:
+  exa-watchdog: { version: '0.5.4.1_163.4fd7026-1' }
+kernel:
+  linux-am33x-legacy: { repo: 'sense', version: '3.8.13-39.4' }
+target: 'production'

@@ -1,0 +1,3 @@
+---
+- name: Exa-run - restart all
+  command: '/usr/local/bin/exa-run restartall'

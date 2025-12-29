@@ -1,0 +1,5 @@
+[ednl-sense]
+name=EDNL Sense RPM Repo
+baseurl=http://10.39.55.127:8081
+enabled=1
+gpgcheck=0

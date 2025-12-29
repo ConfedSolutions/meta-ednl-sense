@@ -1,0 +1,11 @@
+---
+- name: App - Read Build Info
+  action: command cat /home/app/sense/{{ app }}/tmp/build.json
+  register: result
+
+- name: App - Read Build Info - Process json
+  set_fact:
+    appbuildinfo: "{{ result.stdout | from_json }}"
+
+- name: App - Show Build Info
+  action: debug var=appbuildinfo

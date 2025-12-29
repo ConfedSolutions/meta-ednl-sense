@@ -1,0 +1,14 @@
+{
+  "author": {
+    "email": "joel@exa.nl",
+    "name": "Joël Morren"
+  },
+  "description": "The EDNL Delta Maker Client",
+  "main": "bin/deltaupdater.php",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://dev.exa.nl/git/ednl-software-delta-maker-client.git"
+  },
+  "private": true
+}

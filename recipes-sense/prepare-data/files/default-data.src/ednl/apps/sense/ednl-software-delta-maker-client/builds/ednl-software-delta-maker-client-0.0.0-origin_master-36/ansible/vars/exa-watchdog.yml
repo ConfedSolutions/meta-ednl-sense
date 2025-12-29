@@ -1,0 +1,8 @@
+---
+app: 'exa-watchdog'
+nice: 19
+appshort: 'ew'
+version: 'latest'
+forever:
+  command: '/usr/bin/php'
+target: 'production'

@@ -1,0 +1,20 @@
+---
+- name: SMC - check if settings file exists in current/etc
+  stat:
+    path: /home/app/sense/ednl-sense-module-controller/current/etc/settings
+  register: settingsfile
+
+- name: SMC - Copy previous settings file(if it exsists)
+  copy:
+    src: /home/app/sense/ednl-sense-module-controller/current/etc/settings
+    dest: /home/app/sense/ednl-sense-module-controller/tmp/etc/settings
+  when:
+    - settingsfile.stat.exists == true
+
+- name: SMC - Moves settings file for connection to test environment
+  copy:
+    src: "/home/app/sense/ednl-sense-module-controller/tmp/etc/settings.example"
+    dest: "/home/app/sense/ednl-sense-module-controller/tmp/etc/settings"
+  when:
+    - target == "test"
+    - settingsfile.stat.exists == false

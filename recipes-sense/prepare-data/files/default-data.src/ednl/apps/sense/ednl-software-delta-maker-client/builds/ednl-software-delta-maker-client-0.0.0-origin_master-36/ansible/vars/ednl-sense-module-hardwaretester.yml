@@ -1,0 +1,7 @@
+---
+app: 'ednl-sense-module-hardwaretester'
+nice: 19
+appshort: 'smh'
+version: 'latest'
+forever:
+  command: '/usr/bin/php'

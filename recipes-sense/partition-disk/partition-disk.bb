@@ -27,4 +27,3 @@ do_install:append () {
 }
 
 RDEPENDS:${PN} = " e2fsprogs-dumpe2fs e2fsprogs-mke2fs e2fsprogs-e2fsck e2fsprogs-resize2fs e2fsprogs-tune2fs"
-

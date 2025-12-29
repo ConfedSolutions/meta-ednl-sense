@@ -16,6 +16,7 @@ IMAGE_FEATURES += " \
 "
 
 CORE_IMAGE_EXTRA_INSTALL += " \
+    packagegroup-sense-base \
 	packagegroup-core-buildessential \
 	packagegroup-core-full-cmdline \
 	packagegroup-sense-devel \

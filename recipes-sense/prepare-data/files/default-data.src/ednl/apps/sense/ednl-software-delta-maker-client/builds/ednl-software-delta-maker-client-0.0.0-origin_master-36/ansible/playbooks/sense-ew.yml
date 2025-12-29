@@ -1,0 +1,23 @@
+##
+# App exa-watchdog
+#
+---
+- hosts: localbbb
+  remote_user: root
+  become: true
+
+  tags:
+    - devupdate
+    - devupdate-ew
+
+  vars_files:
+    - ../vars/exa-watchdog.yml
+
+  tasks:
+    - include_tasks: ../tasks/exarun.yml
+    - include_tasks: ../tasks/app-unzip.yml
+    - include_tasks: ../tasks/app-readbuildinfo.yml
+    - include_tasks: ../tasks/app-readpackageinfo.yml
+    - include_tasks: ../tasks/app-install.yml
+    - include_tasks: ../tasks/app-activate.yml
+    - include_tasks: ../tasks/app-cleanup.yml

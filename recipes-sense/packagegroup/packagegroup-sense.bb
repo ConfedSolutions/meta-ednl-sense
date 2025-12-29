@@ -5,6 +5,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 inherit packagegroup
 
 PACKAGES = "\
+    ${PN}-base \
     ${PN}-devel \
     ${PN}-display \
     ${PN}-update \
@@ -12,6 +13,12 @@ PACKAGES = "\
     ${PN}-php \
     ${PN}-modem \
     ${PN}-network \
+"
+
+RDEPENDS:${PN}-base = "\
+    binaries \
+    cronie \
+    nano \
 "
 
 RDEPENDS:${PN}-devel = "\
@@ -49,6 +56,8 @@ RDEPENDS:${PN}-display = "\
 
 RDEPENDS:${PN}-update = "\
     partition-disk \
+    custom-repo \
+    prepare-data \
     swupdate \
     swupdate-www \
     kernel-image \

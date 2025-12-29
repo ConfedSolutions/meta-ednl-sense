@@ -1,0 +1,10 @@
+---
+dev_smp: "n"
+dev_smps: "n"
+dev_gmc: "n"
+dev_smc: "n"
+dev_smd: "n"
+dev_smh: "n"
+dev_dmc: "n"
+dev_ect: "n"
+dev_smsp: "n"

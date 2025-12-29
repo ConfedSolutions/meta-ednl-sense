@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=9a1d9cf99c61b1ab65cfc89cbbc38a0b"
 PV = "0.1"
 
 SRC_URI = "git://github.com/ConfedSolutions/winstar-display-sense;protocol=https;branch=main \
-	file://hallo-wereld-linux.png \
+	file://ednl_logo.png \
 "
 
 SRCREV = "c7d9a263068785bc4eccfd0aa54ab656f599d8dc"
@@ -23,7 +23,7 @@ do_install:append () {
 	oe_runmake install DESTDIR=${D} BINDIR=${bindir} SBINDIR=${sbindir} MANDIR=${mandir} INCLUDEDIR=${includedir}
 
 	install -d ${D}/root
-	install -m 644 ${WORKDIR}/hallo-wereld-linux.png ${D}/root/hallo-wereld-linux.png
+	install -m 644 ${WORKDIR}/ednl_logo.png ${D}/root/ednl_logo.png
 }
 
 DEPENDS = "libgpiod"

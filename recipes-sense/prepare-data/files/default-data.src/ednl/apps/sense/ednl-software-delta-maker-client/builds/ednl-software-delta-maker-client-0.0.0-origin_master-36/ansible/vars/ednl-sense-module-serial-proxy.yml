@@ -1,0 +1,4 @@
+---
+app: 'ednl-sense-module-serial-proxy'
+appshort: 'smsp'
+version: 'latest'

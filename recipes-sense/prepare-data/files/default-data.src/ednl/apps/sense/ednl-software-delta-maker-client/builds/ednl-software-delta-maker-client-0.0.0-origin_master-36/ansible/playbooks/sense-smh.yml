@@ -1,0 +1,23 @@
+##
+# App ednl-sense-module-hardwaretester
+#
+---
+- hosts: localbbb
+  remote_user: root
+  become: true
+
+  tags:
+    - devupdate
+    - devupdate-smh
+
+  vars_files:
+    - ../vars/ednl-sense-module-hardwaretester.yml
+
+  tasks:
+    - include_tasks: ../tasks/ansible-checkrun.yml
+    - include_tasks: ../tasks/app-unzip.yml
+    - include_tasks: ../tasks/app-readbuildinfo.yml
+    - include_tasks: ../tasks/app-readpackageinfo.yml
+    - include_tasks: ../tasks/app-install.yml
+    - include_tasks: ../tasks/tools-activate.yml
+    - include_tasks: ../tasks/app-cleanup.yml

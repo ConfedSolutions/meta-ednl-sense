@@ -1,0 +1,51 @@
+---
+- name: App/Tools - Current symlink Local
+  file:
+    state: link
+    path: "/home/app/sense/{{ app }}/current"
+    src: "builds/{{ appbuildinfo.name }}-{{ appbuildinfo.version }}-{{ appbuildinfo.branch | replace('/','_') }}-{{ appbuildinfo.build }}"
+    force: yes
+
+- name: App/Tools - Cronjob for activating ErrorNotifier every 5 minute
+  cron:
+    name: "fivemin_ednlcommontools"
+    minute: "*/5"
+    job: "/usr/bin/nice -n {{ nice }} /home/app/sense/ednl-common-tools/current/bin/check_errors.php"
+  when: ansible_facts.machine ==  "armv7l" and appshort == "ect"
+
+- name: App/Tools - Cronjob for activating Chromium Checker every minute
+  cron:
+    name: "everymin_chromiumchecker"
+    minute: "*/1"
+    job: "/usr/bin/nice -n {{ nice }} /home/app/sense/ednl-common-tools/current/bin/chromiumChecker.php"
+  when: ansible_facts.machine ==  "armv7l" and appshort == "ect"
+
+- name: App/Tools - Cronjob for activating smhc every 15 minutes
+  cron:
+    name: "fifthteenmin_ednlhealthcheck"
+    minute: "*/15"
+    job: "/usr/bin/nice -n {{ nice }} /home/app/sense/ednl-sense-module-healthcheck/current/bin/smhc.php --all"
+  when: ansible_facts.machine == "armv7l" and appshort == "smhc"
+
+- name: App/Tools - Cronjob for activating dmc at reboot
+  cron:
+    name: "reboot_deltamakerclient"
+    special_time: reboot
+    job: "/usr/bin/nice -n {{ nice }} /home/app/sense/ednl-software-delta-maker-client/current/bin/deltaupdater.php -target {{ target }}"
+  when: ansible_facts.machine == "armv7l" and appshort == "dmc"
+
+- name: App/Tools - Cronjob for activating dmc at 4:30
+  cron:
+    name: "300_deltamakerclient"
+    hour: 4
+    minute: 30
+    job: "/usr/bin/nice -n {{ nice }} /home/app/sense/ednl-software-delta-maker-client/current/bin/deltaupdater.php -target {{ target }} --random"
+  when: ansible_facts.machine == "armv7l" and appshort == "dmc"
+
+- name: App/Tools - Current symlink Dev
+  file:
+    state: link
+    path: "/home/app/sense/{{ app }}/current"
+    src: "/home/app/sense/{{ app }}/dev"
+    force: yes
+  when: lookup('vars', 'dev_' + appshort) == 'y' and ansible_facts.machine != 'armv7l'

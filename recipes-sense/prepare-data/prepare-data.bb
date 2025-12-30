@@ -16,9 +16,11 @@ SRC_URI += "\
 	file://prepare-files.service \
 	file://default-data.tar.gz;unpack=false \
 	file://default-security.tar.gz;unpack=false \
+        file://prepare-files.service \
+        file://logo-on-boot.service \
 "
 
-SYSTEMD_SERVICE:${PN} = "prepare-files.service"
+SYSTEMD_SERVICE:${PN} = "prepare-files.service logo-on-boot.service"
 SYSTEMD_PACKAGES = "${PN}"
 
 do_install:append () {
@@ -26,6 +28,7 @@ do_install:append () {
 	install -m 755 ${WORKDIR}/prepare-files.sh ${D}/usr/sbin/prepare-files
 	install -d ${D}${systemd_unitdir}/system
 	install -m 0644 ${WORKDIR}/prepare-files.service ${D}${systemd_unitdir}/system/
+        install -m 0644 ${WORKDIR}/logo-on-boot.service ${D}${systemd_unitdir}/system/
 	install -m 0644 ${WORKDIR}/default-data.tar.gz ${D}/default-data.tar.gz
 	install -m 0644 ${WORKDIR}/default-security.tar.gz ${D}/default-security.tar.gz
 }

@@ -19,6 +19,7 @@ RDEPENDS:${PN}-base = "\
     binaries \
     cronie \
     nano \
+    vim \
 "
 
 RDEPENDS:${PN}-devel = "\

@@ -17,13 +17,12 @@ S = "${WORKDIR}/git"
 TARGET_CC_ARCH += "${LDFLAGS}"
 EXTRA_OEMAKE = "'CC=${CC}' 'RANLIB=${RANLIB}' 'AR=${AR}' 'CLFLAGS=${CFLAGS} -I${S}/.' 'LDFLAGS=${LDFLAGS}' 'BUILDDIR=${S}'"
 
-FILES:${PN} += "/root/*"
+FILES:${PN} += "/ednl_logo.png"
 
 do_install:append () {
 	oe_runmake install DESTDIR=${D} BINDIR=${bindir} SBINDIR=${sbindir} MANDIR=${mandir} INCLUDEDIR=${includedir}
 
-	install -d ${D}/root
-	install -m 644 ${WORKDIR}/ednl_logo.png ${D}/root/ednl_logo.png
+	install -m 644 ${WORKDIR}/ednl_logo.png ${D}/ednl_logo.png
 }
 
 DEPENDS = "libgpiod"

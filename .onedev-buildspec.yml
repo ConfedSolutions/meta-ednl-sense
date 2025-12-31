@@ -6,6 +6,7 @@ jobs:
     name: Pull from remote
     remoteUrl: https://github.com/EDNL-BV/ednl-sensev4-yocto-meta.git
     passwordSecret: github_personal_access_token_rverspuy
+    accessTokenSecret: onedev_personal_acces_token_pvr
     refs: refs/heads/* refs/tags/*
     withLfs: false
     force: false
@@ -20,3 +21,4 @@ jobs:
   maxRetries: 3
   retryDelay: 30
   timeout: 14400
+

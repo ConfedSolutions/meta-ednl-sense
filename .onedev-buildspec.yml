@@ -1,4 +1,7 @@
 version: 43
+imports:
+- projectPath: CI-CD/Shell
+  revision: main
 jobs:
 - name: Pull changes from github
   steps:
@@ -15,10 +18,9 @@ jobs:
   jobExecutor: Server-shell-executor
   triggers:
   - type: ScheduleTrigger
-    cronExpression: '0 */5 * * * ?'
+    cronExpression: '0 */5 * * * ?' 
     projects: Sense/Module/ednl-sensev4-yocto-meta
   retryCondition: never
   maxRetries: 3
   retryDelay: 30
   timeout: 14400
-

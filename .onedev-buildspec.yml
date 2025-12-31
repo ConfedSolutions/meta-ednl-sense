@@ -15,7 +15,7 @@ jobs:
   jobExecutor: Server-shell-executor
   triggers:
   - type: ScheduleTrigger
-    cronExpression: '*/5 * * * * ?'
+    cronExpression: '0 */5 * * * ?'
     projects: Sense/Module/ednl-sensev4-yocto-meta
   retryCondition: never
   maxRetries: 3

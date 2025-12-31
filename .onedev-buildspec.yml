@@ -1,0 +1,27 @@
+version: 43
+imports:
+- projectPath: CI-CD/Shell
+  revision: main
+jobs:
+- name: Pull changes from github
+  steps:
+  - type: PullRepository
+    name: Pull from remote
+    remoteUrl: https://github.com/EDNL-BV/ednl-sensev4-yocto-meta.git
+    passwordSecret: github_personal_access_token_rverspuy
+    accessTokenSecret: onedev_personal_acces_token_pvr
+    refs: refs/heads/* refs/tags/*
+    withLfs: false
+    force: false
+    condition: SUCCESSFUL
+    optional: false
+  jobExecutor: Server-shell-executor
+  triggers:
+  - type: ScheduleTrigger
+    cronExpression: '0 */5 * * * ?' 
+    projects: Sense/Module/ednl-sensev4-yocto-meta
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  timeout: 14400
+

@@ -27,8 +27,7 @@ echo -n "Check if modem in cdc_ether mode: "
 if [ ! -e /sys/class/net/mobile ]; then
 	echo "no, switching"
 	sleep 2
-	echo "import serial; serial.Serial('/dev/ttymdmAT1', 115200)" | python3
-	echo -ne "AT+QCFG=\"usbnet\",1\r" > /dev/ttymdmAT1
+	modem-send "AT+QCFG=\"usbnet\",1"
 else
 	echo "yes, ready"
 fi

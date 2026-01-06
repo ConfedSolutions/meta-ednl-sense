@@ -8,6 +8,7 @@ PV = "0.1"
 
 SRC_URI = "git://github.com/ConfedSolutions/winstar-display-sense;protocol=https;branch=main \
 	file://hallo-wereld-linux.png \
+	file://ednl-logo.png \
 "
 
 SRCREV = "c7d9a263068785bc4eccfd0aa54ab656f599d8dc"
@@ -24,6 +25,7 @@ do_install:append () {
 
 	install -d ${D}/root
 	install -m 644 ${WORKDIR}/hallo-wereld-linux.png ${D}/root/hallo-wereld-linux.png
+	install -m 644 ${WORKDIR}/ednl-logo.png ${D}/root/ednl-logo.png
 }
 
 DEPENDS = "libgpiod"

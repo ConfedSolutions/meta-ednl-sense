@@ -16,7 +16,6 @@ PACKAGES = "\
 "
 
 RDEPENDS:${PN}-base = "\
-    binaries \
     cronie \
     nano \
     vim \
@@ -89,7 +88,6 @@ RDEPENDS:${PN}-network = "\
     dnsmasq \
     net-tools \
     ntp \
-    lighttpd \
     openssh-sftp-server \
     openvpn \
     tcpdump \

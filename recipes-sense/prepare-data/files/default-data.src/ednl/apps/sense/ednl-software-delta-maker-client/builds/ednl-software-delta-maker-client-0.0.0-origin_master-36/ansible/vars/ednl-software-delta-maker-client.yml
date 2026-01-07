@@ -1,6 +1,0 @@
----
-app: 'ednl-software-delta-maker-client'
-nice: 19
-appshort: 'dmc'
-version: 'latest'
-target: 'production'

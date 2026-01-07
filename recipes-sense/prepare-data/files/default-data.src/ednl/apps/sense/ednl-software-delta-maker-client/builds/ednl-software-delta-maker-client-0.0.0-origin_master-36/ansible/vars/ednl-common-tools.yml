@@ -1,6 +1,0 @@
----
-app: 'ednl-common-tools'
-nice: 19
-appshort: 'ect'
-version: 'latest'
-target: 'production'

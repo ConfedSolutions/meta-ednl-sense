@@ -1,6 +1,0 @@
----
-- name: App - Create app dir
-  action: file state=directory path="/home/app/sense/{{ app }}/builds/{{ appbuildinfo.name }}-{{ appbuildinfo.version }}-{{ appbuildinfo.branch | replace('/','_') }}-{{ appbuildinfo.build }}"
-
-- name: App - Sync files from tmp to app dir
-  action: command cp -r /home/app/sense/{{ app }}/tmp/ /home/app/sense/{{ app }}/builds/{{ appbuildinfo.name }}-{{ appbuildinfo.version }}-{{ appbuildinfo.branch | replace('/','_') }}-{{ appbuildinfo.build }}

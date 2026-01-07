@@ -1,7 +1,0 @@
----
-app: 'ednl-sense-module-portalserver'
-nice: '-20'
-appshort: 'smps'
-version: 'latest'
-forever:
-  command: '/usr/bin/node'

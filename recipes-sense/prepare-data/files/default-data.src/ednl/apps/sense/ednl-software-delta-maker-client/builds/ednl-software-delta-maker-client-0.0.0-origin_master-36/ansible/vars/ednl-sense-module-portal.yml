@@ -1,5 +1,0 @@
----
-app: 'ednl-sense-module-portal'
-appshort: 'smp'
-version: 'latest'
-static_files_location: '/var/ednl/sense'

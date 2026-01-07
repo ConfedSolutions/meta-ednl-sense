@@ -1,7 +1,0 @@
----
-app: 'ednl-sense-module-healthcheck'
-nice: 19
-appshort: 'smhc'
-version: 'latest'
-forever:
-  command: '/usr/bin/php'

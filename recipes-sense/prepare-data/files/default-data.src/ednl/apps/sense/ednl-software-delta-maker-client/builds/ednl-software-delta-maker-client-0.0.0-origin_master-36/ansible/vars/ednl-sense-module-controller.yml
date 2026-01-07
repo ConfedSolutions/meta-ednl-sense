@@ -1,8 +1,0 @@
----
-app: 'ednl-sense-module-controller'
-nice: 19
-appshort: 'smc'
-version: 'latest'
-forever:
-  command: '/usr/bin/php'
-target: 'production'

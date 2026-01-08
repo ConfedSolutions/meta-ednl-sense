@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
-DISK=$(cat /proc/cmdline  | sed -E 's|.+root=(/dev/mmcblk[0-9])p[0-9].+|\1|gi')
-PARTITION=$(cat /proc/cmdline  | sed -E 's|.+root=(/dev/mmcblk[0-9]p[0-9]).+|\1|gi')
+DISK=`cat /proc/cmdline  | sed -E 's|.+root=(/dev/mmcblk[0-9])p[0-9].+|\1|gi'`
+PARTITION=`cat /proc/cmdline  | sed -E 's|.+root=(/dev/mmcblk[0-9]p[0-9]).+|\1|gi'`
 MESSAGE=""
 
 mkdir /data /security

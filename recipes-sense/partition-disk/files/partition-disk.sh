@@ -16,6 +16,11 @@ if [ ! -e "${DISK}p3" ]; then
          echo n; echo p; echo 3; echo 8404992; echo 12599295; \
          echo n; echo p; echo 4; echo 12599296; echo ""; \
          echo p; echo w) | fdisk -u "${DISK}"
+        
+        # make sure we clear the existing partitions
+        dd if=/dev/zero of=${DISK} bs=512 seek=4210688 count=10
+        dd if=/dev/zero of=${DISK} bs=512 seek=8404992 count=10
+        dd if=/dev/zero of=${DISK} bs=512 seek=12599296 count=10
 
         sync; sleep 1;
 
@@ -32,6 +37,14 @@ elif ! dumpe2fs "${DISK}p3" > /dev/null 2>&1; then
         mkfs.ext4 "${DISK}p4" -L data
 
         sync; sleep 1;
+        
+        sed -i "s|tmpfs                /var/volatile|#tmpfs                /var/volatile|gi" /etc/fstab
+        echo "${DISK}p3  /security   ext4    defaults        0       0" >> /etc/fstab
+        echo "${DISK}p4  /data   ext4    defaults        0       0" >> /etc/fstab
+        
+        sync; sleep 1;
+        
+        systemctl reboot;
 else
         echo "Storage medium is partitioned as needed";
         MESSAGE="Storage medium is partitioned as needed";

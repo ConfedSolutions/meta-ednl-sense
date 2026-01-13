@@ -15,11 +15,6 @@ IMAGE_FEATURES += " \
     hwcodecs \
 "
 
-CORE_IMAGE_EXTRA_INSTALL:remove = " \
-	packagegroup-tools-bluetooth \
-	packagegroup-variscite-devel \
-"
-
 CORE_IMAGE_EXTRA_INSTALL += " \
 	packagegroup-sense-base \
 	packagegroup-sense-display \
@@ -28,22 +23,6 @@ CORE_IMAGE_EXTRA_INSTALL += " \
 	packagegroup-sense-modem \
 	packagegroup-sense-network \
 "
-
-PACKAGE_EXCLUDE = " \
-	avahi \
-	bluez5 \
-	btrfs-tools \
-	mariadb \
-	python3 \
-	python3-modules \
-	python3-pyserial \
-	python3-gpiod \
-	python3-pip \
-"
-
-IMAGE_INSTALL:remove = "btrfs-tools python3 mariadb"
-
-CORE_IMAGE_EXTRA_INSTALL:remove = "btrfs-tools python3 mariadb"
 
 PREFERRED_VERSION_libxml2-native = "2.12.8"
 

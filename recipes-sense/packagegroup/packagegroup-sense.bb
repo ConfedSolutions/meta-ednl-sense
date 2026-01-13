@@ -1,4 +1,4 @@
-SUMMARY = "EDNL Sense Package Group"
+SUMMARY = "EDNL Sense Package Groups"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
@@ -9,7 +9,6 @@ PACKAGES = "\
     ${PN}-devel \
     ${PN}-display \
     ${PN}-update \
-    ${PN}-python \
     ${PN}-php \
     ${PN}-modem \
     ${PN}-network \
@@ -72,14 +71,6 @@ RDEPENDS:${PN}-update = "\
     custom-repo \
     kernel-image \
     kernel-devicetree \
-"
-
-RDEPENDS:${PN}-python = "\
-    python3 \
-    python3-modules \
-    python3-pyserial \
-    python3-gpiod \
-    python3-pip \
 "
 
 RDEPENDS:${PN}-php = "\

@@ -17,8 +17,18 @@ PACKAGES = "\
 
 RDEPENDS:${PN}-base = "\
     cronie \
+    curl \
     nano \
+    opkg \
+    libgpiod \
+    libgpiod-tools \
+    libgpiodcxx \
+    kmod \
+    var-mii \
     vim \
+    unzip \
+    which \
+    zstd \
 "
 
 RDEPENDS:${PN}-devel = "\
@@ -54,12 +64,12 @@ RDEPENDS:${PN}-display = "\
     winstar-display \
 "
 
+#    prepare-data
+#    swupdate
+
 RDEPENDS:${PN}-update = "\
     partition-disk \
     custom-repo \
-    prepare-data \
-    swupdate \
-    swupdate-www \
     kernel-image \
     kernel-devicetree \
 "

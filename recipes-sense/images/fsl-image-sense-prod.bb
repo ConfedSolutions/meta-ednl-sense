@@ -26,6 +26,15 @@ CORE_IMAGE_EXTRA_INSTALL += " \
 
 PREFERRED_VERSION_libxml2-native = "2.12.8"
 
+PACKAGE_EXCLUDE = " \
+	python3 \
+	python3-core \
+"
+
+IMAGE_INSTALL:remove = "python3 python3-core"
+
+CORE_IMAGE_EXTRA_INSTALL:remove = "python3 python3-core"
+
 # Set the root password to 'admin' and add the 'confed' user with password 'confed'
 # reference: https://developer.technexion.com/docs/embedded-software/linux/yocto/usage-guides/automatically-setting-a-root-password-in-yocto-recipes
 

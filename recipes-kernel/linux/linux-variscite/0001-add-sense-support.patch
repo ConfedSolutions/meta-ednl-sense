@@ -271,8 +271,8 @@ index 000000000000..b4e7d5bd68da
 +		"GPO2",
 +		"LED4",
 +		"WD_RST",
-+		"I2C_SCL_PMIC",
 +		"I2C_SDA_PMIC",
++		"I2C_SCL_PMIC",
 +		"NC",
 +		"NC";
 +

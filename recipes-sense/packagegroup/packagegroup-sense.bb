@@ -10,6 +10,7 @@ PACKAGES = "\
     ${PN}-display \
     ${PN}-update \
     ${PN}-php \
+    ${PN}-python \
     ${PN}-modem \
     ${PN}-network \
 "
@@ -76,6 +77,14 @@ RDEPENDS:${PN}-update = "\
 RDEPENDS:${PN}-php = "\
     php \
     php-cli \
+"
+
+RDEPENDS:${PN}-python = "\
+    python3 \
+    python3-modules \
+    python3-pyserial \
+    python3-gpiod \
+    python3-pip \
 "
 
 RDEPENDS:${PN}-modem = "\

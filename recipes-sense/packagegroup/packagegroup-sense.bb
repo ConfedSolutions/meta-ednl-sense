@@ -69,6 +69,7 @@ RDEPENDS:${PN}-display = "\
 
 RDEPENDS:${PN}-update = "\
     partition-disk \
+    prepare-data \
     custom-repo \
     kernel-image \
     kernel-devicetree \

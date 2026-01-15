@@ -1,7 +1,9 @@
 [Unit]
 Description=Prepare default files for /data and /security partitions
 DefaultDependencies=no
-After=data.mount security.mount partition-disk.service
+Requires=data.mount security.mount
+After=partition-disk.service data.mount security.mount
+Before=local-fs.target
 
 [Service]
 Type=oneshot

@@ -29,6 +29,8 @@ CORE_IMAGE_EXTRA_INSTALL += " \
 	packagegroup-variscite-swupdate \
 "
 
+PREFERRED_VERSION_libxml2-native = "2.12.8"
+
 systemd_disable_vt () {
     rm ${IMAGE_ROOTFS}${sysconfdir}/systemd/system/getty.target.wants/getty@tty*.service
 }

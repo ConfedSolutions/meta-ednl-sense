@@ -1,4 +1,4 @@
-SUMMARY = "EDNL Sense Package Group"
+SUMMARY = "EDNL Sense Package Groups"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
@@ -9,16 +9,26 @@ PACKAGES = "\
     ${PN}-devel \
     ${PN}-display \
     ${PN}-update \
-    ${PN}-python \
     ${PN}-php \
+    ${PN}-python \
     ${PN}-modem \
     ${PN}-network \
 "
 
 RDEPENDS:${PN}-base = "\
     cronie \
+    curl \
     nano \
+    opkg \
+    libgpiod \
+    libgpiod-tools \
+    libgpiodcxx \
+    kmod \
+    var-mii \
     vim \
+    unzip \
+    which \
+    zstd \
 "
 
 RDEPENDS:${PN}-devel = "\
@@ -54,14 +64,19 @@ RDEPENDS:${PN}-display = "\
     winstar-display \
 "
 
+#    prepare-data
+#    swupdate
+
 RDEPENDS:${PN}-update = "\
     partition-disk \
     custom-repo \
-    prepare-data \
-    swupdate \
-    swupdate-www \
     kernel-image \
     kernel-devicetree \
+"
+
+RDEPENDS:${PN}-php = "\
+    php \
+    php-cli \
 "
 
 RDEPENDS:${PN}-python = "\
@@ -70,11 +85,6 @@ RDEPENDS:${PN}-python = "\
     python3-pyserial \
     python3-gpiod \
     python3-pip \
-"
-
-RDEPENDS:${PN}-php = "\
-    php \
-    php-cli \
 "
 
 RDEPENDS:${PN}-modem = "\

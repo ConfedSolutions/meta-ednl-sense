@@ -16,14 +16,24 @@ IMAGE_FEATURES += " \
 "
 
 CORE_IMAGE_EXTRA_INSTALL += " \
-  packagegroup-sense-base \
+	packagegroup-sense-base \
 	packagegroup-sense-display \
 	packagegroup-sense-update \
 	packagegroup-sense-php \
 	packagegroup-sense-modem \
-  packagegroup-sense-network \
-	packagegroup-variscite-swupdate \
+	packagegroup-sense-network \
 "
+
+PREFERRED_VERSION_libxml2-native = "2.12.8"
+
+PACKAGE_EXCLUDE = " \
+	python3 \
+	python3-core \
+"
+
+IMAGE_INSTALL:remove = "python3 python3-core"
+
+CORE_IMAGE_EXTRA_INSTALL:remove = "python3 python3-core"
 
 # Set the root password to 'admin' and add the 'confed' user with password 'confed'
 # reference: https://developer.technexion.com/docs/embedded-software/linux/yocto/usage-guides/automatically-setting-a-root-password-in-yocto-recipes
@@ -41,10 +51,10 @@ systemd_disable_vt () {
 IMAGE_PREPROCESS_COMMAND:append = " ${@ 'systemd_disable_vt;' if bb.utils.contains('DISTRO_FEATURES', 'systemd', True, False, d) and bb.utils.contains('USE_VT', '0', True, False, d) else ''} "
 
 # give the sudo group root rights when using sudo
-modify_sudoers() {
-  sed -i 's/# %sudo/%sudo/g' ${IMAGE_ROOTFS}/etc/sudoers
-}
-ROOTFS_POSTPROCESS_COMMAND += "modify_sudoers;"
+#modify_sudoers() {
+#  sed -i 's/# %sudo/%sudo/g' ${IMAGE_ROOTFS}/etc/sudoers
+#}
+#ROOTFS_POSTPROCESS_COMMAND += "modify_sudoers;"
 
 # configure the SSH server and add the authorized_keys
 configure_sshd() {

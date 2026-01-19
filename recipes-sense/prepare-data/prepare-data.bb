@@ -31,8 +31,6 @@ do_install:append () {
     if [ -d "${WORKDIR}/default" ]; then
         cd ${WORKDIR}/default
 
-        ls -lr > ${D}/test
-
         find . -type d -exec install -d ${D}/{} \;
         find . -type f -exec install -m 0644 {} ${D}/{} \;
     fi

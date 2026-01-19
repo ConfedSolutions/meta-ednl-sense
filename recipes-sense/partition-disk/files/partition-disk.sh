@@ -39,7 +39,6 @@ elif ! dumpe2fs "${DISK}p3" > /dev/null 2>&1; then
         sync
 
         sed -i "s|tmpfs                /var/volatile|#tmpfs                /var/volatile|gi" /etc/fstab
-        sed -i 's|^\(/dev/root[[:space:]]\+/[[:space:]]\+auto[[:space:]]\+\)defaults\([[:space:]]\+\)|\1defaults,ro\2|' /etc/fstab
         echo "${DISK}p3  /security   ext4    defaults        0       0" >> /etc/fstab
         echo "${DISK}p4  /data   ext4    defaults        0       0" >> /etc/fstab
         echo "overlay  /var       overlay  lowerdir=/var,upperdir=/data/overlay/var/upper,workdir=/data/overlay/var/work,x-systemd.requires=data.mount,x-systemd.after=data.mount,x-systemd.requires=prepare-files.service,x-systemd.after=prepare-files.service  0  0" >> /etc/fstab

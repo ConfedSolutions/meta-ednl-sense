@@ -16,13 +16,18 @@ if [ ! -e "${DISK}p3" ]; then
         echo p; echo w) | fdisk -u "${DISK}"
 
         # make sure we clear the existing partitions
-        # dd if=/dev/zero of="${DISK}" bs=512 seek=2113536 count=10
+        dd if=/dev/zero of="${DISK}" bs=512 seek=2113536 count=10
         dd if=/dev/zero of="${DISK}" bs=512 seek=4210688 count=10
         dd if=/dev/zero of="${DISK}" bs=512 seek=4415488 count=10
 
         sync; sleep 1;
 
         systemctl reboot;
+
+	systemd-notify --status="$MESSAGE" --ready
+	echo "Done."
+
+	exit 0
 elif ! dumpe2fs "${DISK}p3" > /dev/null 2>&1; then
         echo "No valid data file system found, creating file systems"
         MESSAGE="No valid data file system found, creating file systems"
@@ -37,6 +42,10 @@ elif ! dumpe2fs "${DISK}p3" > /dev/null 2>&1; then
         mkfs.ext4 "${DISK}p4" -L data
 
         sync
+fi
+
+if ! grep "/security" /etc/fstab > /dev/null 2>&1; then
+        mount -o remount,rw /
 
         sed -i "s|tmpfs                /var/volatile|#tmpfs                /var/volatile|gi" /etc/fstab
         echo "${DISK}p3  /security   ext4    defaults        0       0" >> /etc/fstab
@@ -50,7 +59,9 @@ elif ! dumpe2fs "${DISK}p3" > /dev/null 2>&1; then
         echo "overlay  /etc/openvpn  overlay  lowerdir=/etc/openvpn,upperdir=/security/overlay/etc/openvpn/upper,workdir=/security/overlay/etc/openvpn/work,x-systemd.requires=security.mount,x-systemd.after=security.mount,x-systemd.requires=prepare-files.service,x-systemd.after=prepare-files.service  0  0" >> /etc/fstab
 
         sync
-        
+
+        mount -o remount,ro /
+
         systemctl reboot;
 else
         echo "Storage medium is partitioned as needed";

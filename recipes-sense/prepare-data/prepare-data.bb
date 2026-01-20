@@ -14,10 +14,8 @@ SRC_URI += "\
 	file://LICENSE \
 	file://prepare-files.sh \
 	file://prepare-files.service \
-	file://default-data.tar.gz;unpack=false \
-	file://default-security.tar.gz;unpack=false \
-    file://prepare-files.service \
     file://logo-on-boot.service \
+	file://default \
 "
 
 SYSTEMD_SERVICE:${PN} = "prepare-files.service logo-on-boot.service"
@@ -29,9 +27,17 @@ do_install:append () {
 	install -d ${D}${systemd_unitdir}/system
 	install -m 0644 ${WORKDIR}/prepare-files.service ${D}${systemd_unitdir}/system/
     install -m 0644 ${WORKDIR}/logo-on-boot.service ${D}${systemd_unitdir}/system/
-	install -m 0644 ${WORKDIR}/default-data.tar.gz ${D}/default-data.tar.gz
-	install -m 0644 ${WORKDIR}/default-security.tar.gz ${D}/default-security.tar.gz
+	
+    if [ -d "${WORKDIR}/default" ]; then
+        cd ${WORKDIR}/default
+
+        find . -type d -exec install -d ${D}/{} \;
+        find . -type f -exec install -m 0644 {} ${D}/{} \;
+    fi
 }
 
-FILES:${PN} += "/default-data.tar.gz"
-FILES:${PN} += "/default-security.tar.gz"
+FILES:${PN} += " \
+    ${sysconfdir}/ednl \
+    /var/ednl/ \
+    /home/app \
+"

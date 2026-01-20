@@ -13,6 +13,7 @@ do_rootfs[network] = "1"
 IMAGE_FEATURES += " \
     ssh-server-openssh \
     hwcodecs \
+    read-only-rootfs \
 "
 
 CORE_IMAGE_EXTRA_INSTALL += " \

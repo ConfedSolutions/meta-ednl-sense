@@ -18,6 +18,7 @@ PACKAGES = "\
 RDEPENDS:${PN}-base = "\
     cronie \
     curl \
+    dhcpcd \
     nano \
     opkg \
     libgpiod \

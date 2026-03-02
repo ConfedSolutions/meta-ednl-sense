@@ -4,7 +4,7 @@ AUTHOR = "nick.vanijzendoorn@confed.eu"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=9a1d9cf99c61b1ab65cfc89cbbc38a0b"
 
-PV = "1.1"
+PV = "1.2"
 
 SRC_URI += "git://github.com/ConfedSolutions/modem-send;protocol=https;branch=main \
 	file://modem_poweroff.sh \

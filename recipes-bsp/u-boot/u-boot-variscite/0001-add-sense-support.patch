@@ -1,15 +1,16 @@
-From 26ef24647f950d0e87a72f5a2d074886b431db2b Mon Sep 17 00:00:00 2001
+From 1418147eb76f60abbbcf0b9db6bfe8cfbe4b79ae Mon Sep 17 00:00:00 2001
 From: "N. van IJzendoorn" <nick.vanijzendoorn@confed.eu>
-Date: Mon, 24 Nov 2025 07:58:21 +0000
+Date: Mon, 2 Mar 2026 10:15:32 +0100
 Subject: [PATCH] add sense support
 
 ---
- arch/arm/dts/Makefile                        |   1 +
- arch/arm/dts/imx91-var-som-sense-u-boot.dtsi | 226 +++++++++++++++
- arch/arm/dts/imx91-var-som-sense.dts         | 280 +++++++++++++++++++
- configs/imx91_var_som_sense_defconfig        | 190 +++++++++++++
- include/configs/imx91_var_som.h              |   5 +-
- 5 files changed, 700 insertions(+), 2 deletions(-)
+ arch/arm/dts/Makefile                         |   1 +
+ arch/arm/dts/imx91-var-som-sense-u-boot.dtsi  | 213 ++++++++++++++++++
+ arch/arm/dts/imx91-var-som-sense.dts          | 195 ++++++++++++++++
+ board/variscite/imx91_var_som/imx91_var_som.c |  15 +-
+ configs/imx91_var_som_sense_defconfig         | 191 ++++++++++++++++
+ include/configs/imx91_var_som.h               |   5 +-
+ 6 files changed, 617 insertions(+), 3 deletions(-)
  create mode 100644 arch/arm/dts/imx91-var-som-sense-u-boot.dtsi
  create mode 100644 arch/arm/dts/imx91-var-som-sense.dts
  create mode 100644 configs/imx91_var_som_sense_defconfig
@@ -28,10 +29,10 @@ index 2f11fb86164..97b6ec7dc97 100644
  	imx93-11x11-evk-pmic-pf0900.dtb \
 diff --git a/arch/arm/dts/imx91-var-som-sense-u-boot.dtsi b/arch/arm/dts/imx91-var-som-sense-u-boot.dtsi
 new file mode 100644
-index 00000000000..5363c04a6aa
+index 00000000000..4e107571e27
 --- /dev/null
 +++ b/arch/arm/dts/imx91-var-som-sense-u-boot.dtsi
-@@ -0,0 +1,226 @@
+@@ -0,0 +1,213 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Copyright 2024 NXP
@@ -108,15 +109,6 @@ index 00000000000..5363c04a6aa
 +	bootph-some-ram;
 +};
 +
-+&reg_usdhc2_vmmc {
-+	u-boot,off-on-delay-us = <20000>;
-+	bootph-pre-ram;
-+};
-+
-+&pinctrl_reg_usdhc2_vmmc {
-+	bootph-pre-ram;
-+};
-+
 +&pinctrl_uart1 {
 +	bootph-pre-ram;
 +	bootph-some-ram;
@@ -128,10 +120,6 @@ index 00000000000..5363c04a6aa
 +};
 +
 +&pinctrl_usdhc1 {
-+	bootph-pre-ram;
-+};
-+
-+&pinctrl_usdhc2 {
 +	bootph-pre-ram;
 +};
 +
@@ -260,10 +248,10 @@ index 00000000000..5363c04a6aa
 +};
 diff --git a/arch/arm/dts/imx91-var-som-sense.dts b/arch/arm/dts/imx91-var-som-sense.dts
 new file mode 100644
-index 00000000000..32d8f23b40f
+index 00000000000..a29bd0683a7
 --- /dev/null
 +++ b/arch/arm/dts/imx91-var-som-sense.dts
-@@ -0,0 +1,280 @@
+@@ -0,0 +1,195 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright 2024 NXP
@@ -286,19 +274,6 @@ index 00000000000..32d8f23b40f
 +	chosen {
 +		stdout-path = &lpuart1;
 +	};
-+
-+	reg_usdhc2_vmmc: regulator-usdhc2 {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_reg_usdhc2_vmmc>;
-+		regulator-name = "VSD_3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		gpio = <&gpio2 18 GPIO_ACTIVE_HIGH>;
-+		off-on-delay-us = <12000>;
-+		startup-delay-us = <10000>;
-+		enable-active-high;
-+	};
 +};
 +
 +&eqos {
@@ -309,9 +284,19 @@ index 00000000000..32d8f23b40f
 +			reg = <5>;
 +			at803x,eee-disabled;
 +			eee-broken-1000t;
-+			reset-gpios = <&pca9534 5 GPIO_ACTIVE_LOW>;
++			reset-gpios = <&gpio4 28 GPIO_ACTIVE_LOW>;
 +			reset-assert-us = <15000>;
 +			reset-deassert-us = <100000>;
++			mxl-8611x,led0_cfg = <(
++				MXL8611X_LEDX_CFG_LINK_UP_RX_ACT_ON |
++				MXL8611X_LEDX_CFG_LINK_UP_TX_ACT_ON |
++				MXL8611X_LEDX_CFG_TRAFFIC_ACT_BLINK_IND
++			)>;
++			mxl-8611x,led1_cfg = <(
++				MXL8611X_LEDX_CFG_LINK_UP_10MB_ON |
++				MXL8611X_LEDX_CFG_LINK_UP_100MB_ON |
++				MXL8611X_LEDX_CFG_LINK_UP_1GB_ON
++			)>;
 +		};
 +	};
 +};
@@ -325,6 +310,27 @@ index 00000000000..32d8f23b40f
 +};
 +
 +&iomuxc {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_hog>;
++
++	pinctrl_hog: hoggrp {
++		fsl,pins = <
++			MX91_PAD_GPIO_IO27__GPIO2_IO27			0x51e /* out: WD_RST */
++			MX91_PAD_GPIO_IO21__GPIO2_IO21			0x51e /* out: LED2 */
++			MX91_PAD_GPIO_IO18__GPIO2_IO18			0x51e /* out: LED3 */
++			MX91_PAD_GPIO_IO26__GPIO2_IO26			0x51e /* out: LED4 */
++			MX91_PAD_GPIO_IO10__GPIO2_IO10			0x51e /* out: LED5 */
++			MX91_PAD_GPIO_IO23__GPIO2_IO23			0x51e /* out: GPO1 */
++			MX91_PAD_GPIO_IO25__GPIO2_IO25			0x51e /* out: GPO2 */
++			MX91_PAD_SD2_CD_B__GPIO3_IO0			0x11e /* in:  GPI1 */
++			MX91_PAD_SD2_CMD__GPIO3_IO2			0x11e /* in:  GPI2 */
++			MX91_PAD_GPIO_IO24__GPIO2_IO24			0x31e /* out: BUZZER_N */
++			MX91_PAD_GPIO_IO22__GPIO2_IO22			0x11e /* out: SHDN */
++			MX91_PAD_DAP_TDO_TRACESWO__GPIO3_IO31		0x51e /* out: WL_RESET */ 
++			MX91_PAD_DAP_TMS_SWDIO__GPIO3_IO29		0x51e /* out: WL_PWRKEY */
++		>;
++	};
++
 +	pinctrl_fec: fecgrp {
 +		fsl,pins = <
 +			MX91_PAD_ENET2_RD0__ENET2_RGMII_RD0		0x57e
@@ -339,6 +345,8 @@ index 00000000000..32d8f23b40f
 +			MX91_PAD_ENET2_TD3__ENET2_RGMII_TD3		0x57e
 +			MX91_PAD_ENET2_TXC__ENET2_RGMII_TXC		0x5fe
 +			MX91_PAD_ENET2_TX_CTL__ENET2_RGMII_TX_CTL	0x57e
++			MX91_PAD_DAP_TDI__GPIO3_IO28			0x31e /* MDIO_EN  3 = PU 5 = PD*/
++			MX91_PAD_CCM_CLKO3__GPIO4_IO28			0x51e /* PHY_RST_N */
 +		>;
 +	};
 +
@@ -356,26 +364,6 @@ index 00000000000..32d8f23b40f
 +		>;
 +	};
 +
-+	pinctrl_lpi2c5: lpi2c5grp {
-+		fsl,pins = <
-+			MX91_PAD_GPIO_IO23__LPI2C5_SCL			0x40000b9e
-+			MX91_PAD_GPIO_IO22__LPI2C5_SDA			0x40000b9e
-+		>;
-+	};
-+
-+	pinctrl_lpi2c5_gpio: lpi2c5grp-gpio {
-+		fsl,pins = <
-+			MX91_PAD_GPIO_IO23__GPIO2_IO23			0x31e
-+			MX91_PAD_GPIO_IO22__GPIO2_IO22			0x31e
-+		>;
-+	};
-+
-+	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmcgrp {
-+		fsl,pins = <
-+			MX91_PAD_GPIO_IO18__GPIO2_IO18			0x31e
-+		>;
-+	};
-+
 +	pinctrl_uart1: uart1grp {
 +		fsl,pins = <
 +			MX91_PAD_UART1_RXD__LPUART1_RX			0x31e
@@ -385,51 +373,12 @@ index 00000000000..32d8f23b40f
 +
 +	pinctrl_spi6: spi6grp {
 +		fsl,pins = <
-+			MX91_PAD_GPIO_IO00__GPIO2_IO0			0x0000031E
-+                	MX91_PAD_GPIO_IO01__LPSPI6_SIN			0x0000051E
-+                	MX91_PAD_GPIO_IO02__LPSPI6_SOUT			0x0000051E
-+                	MX91_PAD_GPIO_IO03__LPSPI6_SCK			0x0000051E
-+			MX91_PAD_GPIO_IO16__GPIO2_IO16			0x0000051E
-+			MX91_PAD_GPIO_IO19__GPIO2_IO19			0x0000051E
-+		>;
-+	};
-+
-+	/* need to config the SION for data and cmd pad, refer to ERR052021 */
-+	pinctrl_usdhc2: usdhc2grp {
-+		fsl,pins = <
-+			MX91_PAD_SD2_CLK__USDHC2_CLK		0x1582
-+			MX91_PAD_SD2_CMD__USDHC2_CMD		0x40001382
-+			MX91_PAD_SD2_DATA0__USDHC2_DATA0	0x40001382
-+			MX91_PAD_SD2_DATA1__USDHC2_DATA1	0x40001382
-+			MX91_PAD_SD2_DATA2__USDHC2_DATA2	0x40001382
-+			MX91_PAD_SD2_DATA3__USDHC2_DATA3	0x40001382
-+			MX91_PAD_SD2_VSELECT__USDHC2_VSELECT	0x51e
-+		>;
-+	};
-+
-+	/* need to config the SION for data and cmd pad, refer to ERR052021 */
-+	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
-+		fsl,pins = <
-+			MX91_PAD_SD2_CLK__USDHC2_CLK		0x158e
-+			MX91_PAD_SD2_CMD__USDHC2_CMD		0x4000138e
-+			MX91_PAD_SD2_DATA0__USDHC2_DATA0	0x4000138e
-+			MX91_PAD_SD2_DATA1__USDHC2_DATA1	0x4000138e
-+			MX91_PAD_SD2_DATA2__USDHC2_DATA2	0x4000138e
-+			MX91_PAD_SD2_DATA3__USDHC2_DATA3	0x4000138e
-+			MX91_PAD_SD2_VSELECT__USDHC2_VSELECT	0x51e
-+		>;
-+	};
-+
-+	/* need to config the SION for data and cmd pad, refer to ERR052021 */
-+	pinctrl_usdhc2_200mhz: usdhc2-200mhzgrp {
-+		fsl,pins = <
-+			MX91_PAD_SD2_CLK__USDHC2_CLK		0x15fe
-+			MX91_PAD_SD2_CMD__USDHC2_CMD		0x400013fe
-+			MX91_PAD_SD2_DATA0__USDHC2_DATA0	0x400013fe
-+			MX91_PAD_SD2_DATA1__USDHC2_DATA1	0x400013fe
-+			MX91_PAD_SD2_DATA2__USDHC2_DATA2	0x400013fe
-+			MX91_PAD_SD2_DATA3__USDHC2_DATA3	0x400013fe
-+			MX91_PAD_SD2_VSELECT__USDHC2_VSELECT	0x51e
++			MX91_PAD_GPIO_IO00__GPIO2_IO0			0x31e
++                	MX91_PAD_GPIO_IO01__LPSPI6_SIN			0x51e
++                	MX91_PAD_GPIO_IO02__LPSPI6_SOUT			0x51e
++                	MX91_PAD_GPIO_IO03__LPSPI6_SCK			0x51e
++			MX91_PAD_GPIO_IO16__GPIO2_IO16			0x51e
++			MX91_PAD_GPIO_IO19__GPIO2_IO19			0x51e
 +		>;
 +	};
 +};
@@ -445,49 +394,12 @@ index 00000000000..32d8f23b40f
 +	scl-gpios = <&gpio1 0 GPIO_ACTIVE_HIGH>;
 +	sda-gpios = <&gpio1 1 GPIO_ACTIVE_HIGH>;
 +	status = "okay";
-+};
-+
-+&lpi2c5 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default", "sleep", "gpio";
-+	pinctrl-0 = <&pinctrl_lpi2c5>;
-+	pinctrl-1 = <&pinctrl_lpi2c5_gpio>;
-+	pinctrl-2 = <&pinctrl_lpi2c5_gpio>;
-+	scl-gpios = <&gpio2 23 GPIO_ACTIVE_HIGH>;
-+	sda-gpios = <&gpio2 22 GPIO_ACTIVE_HIGH>;
-+	status = "okay";
-+
-+	pca9534: gpio@20 {
-+		status = "okay";
-+		compatible = "nxp,pca9534";
-+		reg = <0x20>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		eth1_phy_vsel_hog {
-+			gpio-hog;
-+			gpio-hog-optional;
-+			gpios = <6 0>;
-+			output-high;
-+			line-name = "eth1_phy_vsel";
-+		};
-+
-+		eth1_phy_pwr_hog {
-+			gpio-hog;
-+			gpio-hog-optional;
-+			gpios = <7 0>;
-+			output-high;
-+			line-name = "eth1_phy_pwr";
-+		};
-+	};
 +
 +	ptn5150: ptn5150@3d {
 +		compatible = "nxp,ptn5150";
 +		pinctrl-names = "default";
 +		reg = <0x3d>;
-+		i2c-bus = <0x4>;
++		i2c-bus = <0x0>;
 +		status = "okay";
 +	};
 +};
@@ -533,23 +445,54 @@ index 00000000000..32d8f23b40f
 +};
 +
 +&usdhc2 {
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-+	pinctrl-0 = <&pinctrl_usdhc2>;
-+	pinctrl-1 = <&pinctrl_usdhc2_100mhz>;
-+	pinctrl-2 = <&pinctrl_usdhc2_200mhz>;
-+	non-removable;
-+	vmmc-supply = <&reg_usdhc2_vmmc>;
-+	bus-width = <4>;
-+	status = "okay";
-+	no-sdio;
-+	no-mmc;
++	status = "disabled";
 +};
+diff --git a/board/variscite/imx91_var_som/imx91_var_som.c b/board/variscite/imx91_var_som/imx91_var_som.c
+index 0efb6a8c872..cc1f9226d21 100644
+--- a/board/variscite/imx91_var_som/imx91_var_som.c
++++ b/board/variscite/imx91_var_som/imx91_var_som.c
+@@ -10,6 +10,7 @@
+ #include <miiphy.h>
+ #include <netdev.h>
+ #include <asm/global_data.h>
++#include <asm/gpio.h>
+ #include <asm/arch-imx9/ccm_regs.h>
+ #include <asm/arch/sys_proto.h>
+ #include <asm/arch-imx9/imx91_pins.h>
+@@ -29,7 +30,11 @@ DECLARE_GLOBAL_DATA_PTR;
+ #define CARRIER_EEPROM_ADDR 0x54
+ 
+ #define UART_PAD_CTRL	(PAD_CTL_DSE(6) | PAD_CTL_FSEL2)
+-#define WDOG_PAD_CTRL	(PAD_CTL_DSE(6) | PAD_CTL_ODE | PAD_CTL_PUE | PAD_CTL_PE)
++#define WDOG_PAD_CTRL	(PAD_CTL_DSE(6) | PAD_CTL_ODE | PAD_CTL_PUE | PAD_CTL_PE),
++
++#define IMX_GPIO_NR(port, index)		((((port)-1)*32)+((index)&31))
++#define BUZZER_N	IMX_GPIO_NR(2, 24)
++#define MDIO_EN		IMX_GPIO_NR(3, 28)
+ 
+ static iomux_v3_cfg_t const uart_pads[] = {
+ 	MX91_PAD_UART1_RXD__LPUART1_RX | MUX_PAD_CTRL(UART_PAD_CTRL),
+@@ -103,6 +108,14 @@ int board_early_init_f(void)
+ 
+ 	init_uart_clk(LPUART1_CLK_ROOT);
+ 
++	// enable the MDIO_EN pin, to enable the MDIO switch
++	gpio_request(MDIO_EN, "MDIO_EN");
++	gpio_direction_output(MDIO_EN, 1);
++
++	// enable the BUZZER_N pin, to disable the buzzer
++	gpio_request(BUZZER_N, "BUZZER_N");
++	gpio_direction_output(BUZZER_N, 1);
++
+ 	return 0;
+ }
+ 
 diff --git a/configs/imx91_var_som_sense_defconfig b/configs/imx91_var_som_sense_defconfig
 new file mode 100644
-index 00000000000..269413effa5
+index 00000000000..8d0ec1d4ef1
 --- /dev/null
 +++ b/configs/imx91_var_som_sense_defconfig
-@@ -0,0 +1,190 @@
+@@ -0,0 +1,191 @@
 +CONFIG_ARM=y
 +CONFIG_ARCH_IMX9=y
 +CONFIG_TEXT_BASE=0x80200000
@@ -561,6 +504,7 @@ index 00000000000..269413effa5
 +CONFIG_ENV_SIZE=0x4000
 +CONFIG_ENV_OFFSET=0x700000
 +CONFIG_DM_GPIO=y
++CONFIG_SPL_GPIO=y
 +CONFIG_DEFAULT_DEVICE_TREE="imx91-var-som-sense"
 +CONFIG_SPL_TEXT_BASE=0x204A0000
 +CONFIG_USB_TCPC=y
@@ -741,7 +685,7 @@ index 00000000000..269413effa5
 +CONFIG_BZIP2=y
 +CONFIG_SPL_LZO=y
 diff --git a/include/configs/imx91_var_som.h b/include/configs/imx91_var_som.h
-index c8714d20c38..b04c745ba18 100644
+index c8714d20c38..5224e6aa667 100644
 --- a/include/configs/imx91_var_som.h
 +++ b/include/configs/imx91_var_som.h
 @@ -58,7 +58,7 @@
@@ -764,5 +708,5 @@ index c8714d20c38..b04c745ba18 100644
  	"loadbootscript=load mmc ${mmcdev}:${mmcpart} ${loadaddr} ${bootdir}/${script};\0" \
  	"bootscript=echo Running bootscript from mmc ...; " \
 -- 
-2.44.1
+2.43.0
 

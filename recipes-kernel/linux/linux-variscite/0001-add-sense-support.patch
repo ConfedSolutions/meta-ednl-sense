@@ -1,4 +1,4 @@
-From dfb097d38773183c9a9669cc5cebd78e86d2d176 Mon Sep 17 00:00:00 2001
+From 9de72e3d3391fee8fa0f6278ecc85f54bd08cd3e Mon Sep 17 00:00:00 2001
 From: "N. van IJzendoorn" <nick.vanijzendoorn@confed.eu>
 Date: Mon, 2 Mar 2026 09:12:23 +0100
 Subject: [PATCH] add sense support
@@ -44,7 +44,7 @@ index 000000000000..4343d2319bae
 +};
 diff --git a/arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi b/arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi
 new file mode 100644
-index 000000000000..77a924d21a50
+index 000000000000..e0f65d05c8be
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi
 @@ -0,0 +1,593 @@
@@ -519,11 +519,11 @@ index 000000000000..77a924d21a50
 +		reg = <0x4b>;
 +	};
 +
-+	at24c256@53 {
++	at24c256@54 {
 +		compatible = "atmel,24c256","at24";
 +		#address-cells = <1>;
 +		#size-cells = <0>;
-+		reg = <0x53>;
++		reg = <0x54>;
 +		pagesize = <64>;
 +		size = <32768>;
 +		address-width = <16>;

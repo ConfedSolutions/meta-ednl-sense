@@ -5,4 +5,5 @@ SRC_URI += " \
         file://display-panels.cfg \
         file://overlay.cfg \
         file://no-bluetooth.cfg \
+        file://peripheral.cfg \
 "

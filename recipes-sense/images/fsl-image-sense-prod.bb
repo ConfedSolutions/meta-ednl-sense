@@ -23,6 +23,7 @@ CORE_IMAGE_EXTRA_INSTALL += " \
 	packagegroup-sense-php \
 	packagegroup-sense-modem \
 	packagegroup-sense-network \
+	packagegroup-sense-watchdog \
 "
 
 PREFERRED_VERSION_libxml2-native = "2.12.8"
@@ -66,6 +67,7 @@ configure_sshd() {
   # add public SSH keys to the authorized_keys file
   mkdir -p ${IMAGE_ROOTFS}/root/.ssh/
   echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIBL34ZRj9VTiHB6yzli8oGq+Kay4shM2WOl0aleLMH5 Nick@5CD0237LSQ' > ${IMAGE_ROOTFS}/root/.ssh/authorized_keys
+  echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAQZAscyBbqBvLihYn/MSASTh0qf66lv4zLSNZGhvm4F nick@nick-VirtualBox' >> ${IMAGE_ROOTFS}/root/.ssh/authorized_keys
   chmod 700 ${IMAGE_ROOTFS}/root/.ssh/
   chmod 600 ${IMAGE_ROOTFS}/root/.ssh/authorized_keys
 }

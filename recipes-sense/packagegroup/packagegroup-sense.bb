@@ -13,6 +13,7 @@ PACKAGES = "\
     ${PN}-python \
     ${PN}-modem \
     ${PN}-network \
+    ${PN}-watchdog \
 "
 
 RDEPENDS:${PN}-base = "\
@@ -65,15 +66,13 @@ RDEPENDS:${PN}-display = "\
     winstar-display \
 "
 
-#    prepare-data
-#    swupdate
-
 RDEPENDS:${PN}-update = "\
     partition-disk \
     prepare-data \
     custom-repo \
     kernel-image \
     kernel-devicetree \
+    swupdate \
 "
 
 RDEPENDS:${PN}-php = "\
@@ -109,3 +108,8 @@ RDEPENDS:${PN}-network = "\
     iputils \
     wget \
 "
+
+RDEPENDS:${PN}-watchdog = "\
+    watchdog-toggle \
+"
+

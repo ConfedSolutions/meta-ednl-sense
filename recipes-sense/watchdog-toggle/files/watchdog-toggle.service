@@ -1,0 +1,14 @@
+[Unit]
+Description=Toggle the watchdog constantly
+DefaultDependencies=no
+
+[Service]
+Type=notify-reload
+ExecStart=/usr/bin/gpioset -t 10s -c 0 27=1
+KillMode=process
+Restart=on-failure
+RestartSec=10s
+
+[Install]
+WantedBy=sysinit.target
+

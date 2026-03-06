@@ -14,11 +14,10 @@ SRC_URI += "\
 	file://LICENSE \
 	file://prepare-files.sh \
 	file://prepare-files.service \
-	file://logo-on-boot.service \
 	file://default \
 "
 
-SYSTEMD_SERVICE:${PN} = "prepare-files.service logo-on-boot.service"
+SYSTEMD_SERVICE:${PN} = "prepare-files.service"
 SYSTEMD_PACKAGES = "${PN}"
 
 do_install:append () {
@@ -26,7 +25,6 @@ do_install:append () {
 	install -m 755 ${WORKDIR}/prepare-files.sh ${D}/usr/sbin/prepare-files
 	install -d ${D}${systemd_unitdir}/system
 	install -m 0644 ${WORKDIR}/prepare-files.service ${D}${systemd_unitdir}/system/
-	install -m 0644 ${WORKDIR}/logo-on-boot.service ${D}${systemd_unitdir}/system/
 	
 	if [ -d "${WORKDIR}/default" ]; then
 		cd ${WORKDIR}/default

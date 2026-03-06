@@ -1,0 +1,17 @@
+[Unit]
+Description=Display EDNL logo on boot
+# Disable default dependencies to bypass the standard wait
+DefaultDependencies=no
+
+# Run this before the very first system initialization target
+Before=user.slice
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/draw-image -i /ednl_logo.png
+RemainAfterExit=no
+
+[Install]
+# This ensures it is pulled in during the initial sysinit phase
+WantedBy=user.slice
+

@@ -4,7 +4,7 @@ DefaultDependencies=no
 
 [Service]
 Type=notify-reload
-ExecStart=/usr/bin/gpioset -t 10s -c 0 27=1
+ExecStart=/usr/bin/gpioset -t 10s -C watchdog-toggle -c 0 27=1
 KillMode=process
 Restart=on-failure
 RestartSec=10s

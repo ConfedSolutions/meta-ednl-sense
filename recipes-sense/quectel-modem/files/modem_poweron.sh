@@ -4,11 +4,11 @@
 if [ ! -e /dev/ttymdmAT1 ]; then
 	echo "Modem powered off"
 	
+	# toggle the line 600ms high (min 500ms), 100ms low and then release the GPIO leaving it low
 	echo "Power on modem via PWRKEY pin"
-	gpioset -p 500ms -t 0 -c 1 29=1
-	gpioset -p 500ms -t 0 -c 1 29=0
+	gpioset -t 600ms,100ms,0 -C modem_poweron -c 1 29=1
 	
-	# wait for the modem to have booted
+	# wait for the modem to have booted, this can take more then 13 seconds according to the datasheet
 	while [ ! -e /dev/ttymdmAT1 ]; do
 		echo -n .
 		sleep 1
@@ -17,7 +17,7 @@ if [ ! -e /dev/ttymdmAT1 ]; then
 	# avoid a race condition where the USB serial is there but the network interface not yet
 	echo ""
 	echo "Modem firmware booted"
-	sleep 1
+	sleep 2
 else
 	echo "Modem already powered on"
 fi

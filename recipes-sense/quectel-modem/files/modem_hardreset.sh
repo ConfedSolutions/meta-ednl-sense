@@ -6,6 +6,9 @@ echo "!!! WARNING !!! only use if the modem doesn't respond"
 echo "Reset the modem via the RESET pin"
 gpioset -t 300ms,0 -C modem_hardreset -c 1 31=1
 
+# wait for the modem to have started the reset sequence
+sleep 2
+
 # wait for the modem to have (re-)booted, this can take more then 13 seconds according to the datasheet
 while [ ! -e /dev/ttymdmAT1 ]; do
 	echo -n .

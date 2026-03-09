@@ -4,9 +4,9 @@
 if [ ! -e /dev/ttymdmAT1 ]; then
 	echo "Modem powered off"
 	
-	# toggle the line 600ms high (min 500ms), 100ms low and then release the GPIO leaving it low
-	echo "Power on modem via PWRKEY pin"
-	gpioset -t 600ms,100ms,0 -C modem_poweron -c 1 29=1
+	# toggle the line 600ms high (min 500ms) then low and release the GPIO leaving it low
+	echo "Power on modem via the PWRKEY pin"
+	gpioset -t 600ms,0 -C modem_poweron -c 1 29=1
 	
 	# wait for the modem to have booted, this can take more then 13 seconds according to the datasheet
 	while [ ! -e /dev/ttymdmAT1 ]; do

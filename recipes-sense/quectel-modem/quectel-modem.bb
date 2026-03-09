@@ -9,6 +9,7 @@ PV = "1.2"
 SRC_URI += "git://github.com/ConfedSolutions/modem-send;protocol=https;branch=main \
 	file://modem_poweroff.sh \
 	file://modem_poweron.sh \
+	file://modem_hardreset.sh \
 	file://99-quectel-modems.rules \
 "
 SRCREV = "82e258c1771dc3d56263df8d9b062ebc1f0ab6d7"
@@ -24,6 +25,7 @@ do_install:append () {
 	install -d ${D}/usr/sbin/
 	install -m 755 ${WORKDIR}/modem_poweroff.sh ${D}/usr/sbin/modem_off
 	install -m 755 ${WORKDIR}/modem_poweron.sh ${D}/usr/sbin/modem_on
+	install -m 755 ${WORKDIR}/modem_hardreset.sh ${D}/usr/sbin/modem_hardreset
 	
 	install -d ${D}/etc/udev/rules.d/
 	install -m 755 ${WORKDIR}/99-quectel-modems.rules ${D}/etc/udev/rules.d/

@@ -13,7 +13,7 @@ SRC_URI += "git://github.com/ConfedSolutions/modem-send;protocol=https;branch=ma
 	file://modem_initialize.sh \
 	file://99-quectel-modems.rules \
 "
-SRCREV = "41508148bf9fc134d29ca1b7a5a25caab42b39af"
+SRCREV = "7df05910db538c59806b284e050e7766ca6a9e67"
 
 S = "${WORKDIR}/git"
 

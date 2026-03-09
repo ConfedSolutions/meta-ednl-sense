@@ -17,6 +17,7 @@ PACKAGES = "\
 "
 
 RDEPENDS:${PN}-base = "\
+    can-utils \
     cronie \
     curl \
     dhcpcd \

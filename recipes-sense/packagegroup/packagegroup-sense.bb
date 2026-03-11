@@ -91,6 +91,7 @@ RDEPENDS:${PN}-python = "\
 
 RDEPENDS:${PN}-modem = "\
     quectel-modem \
+    quectel-updater \
 "
 
 RDEPENDS:${PN}-network = "\

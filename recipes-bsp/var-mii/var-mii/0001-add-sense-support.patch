@@ -1,0 +1,24 @@
+From fdc757d3aa6bf3592fd4944ab89f723da7aa1988 Mon Sep 17 00:00:00 2001
+From: "N. van IJzendoorn" <nick.vanijzendoorn@confed.eu>
+Date: Wed, 11 Mar 2026 11:24:47 +0100
+Subject: [PATCH] add sense support
+
+---
+ main.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/main.c b/main.c
+index 2d45aaf..5b79b27 100644
+--- a/main.c
++++ b/main.c
+@@ -107,6 +107,7 @@ machine_phyconfig_t machine_config_imx91 = {
+                 { .phy = { .if_name = "eth0", .addr = 0, .id = MXL86110_PHY_ID_1, .mode = "rgmii" }},
+                 { .phy = { .if_name = "eth1", .addr = 5, .id = ADIN1300_PHY_ID_1, .mode = "rgmii" }},
+                 { .phy = { .if_name = "eth1", .addr = 5, .id = AR803x_PHY_ID_1,   .mode = "rgmii" }, .ar803_vddio = AT803X_VDDIO_1P8V },
++                { .phy = { .if_name = "eth1", .addr = 5, .id = MXL86110_PHY_ID_1, .mode = "rgmii" }},
+                 /* dt8mcustomboard */
+                 { .phy = { .if_name = "eth1", .addr = 1, .id = ADIN1300_PHY_ID_1, .mode = "rgmii" }},
+                 /* sonata */
+-- 
+2.43.0
+

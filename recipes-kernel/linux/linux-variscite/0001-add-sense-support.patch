@@ -1,13 +1,13 @@
-From 8b98424358163f093e3c6af7b6a48def7b4c30cb Mon Sep 17 00:00:00 2001
+From 8017326d882e1053d06ef226611bdadc1c896d9f Mon Sep 17 00:00:00 2001
 From: "N. van IJzendoorn" <nick.vanijzendoorn@confed.eu>
-Date: Wed, 11 Mar 2026 11:17:24 +0100
+Date: Thu, 12 Mar 2026 09:38:02 +0100
 Subject: [PATCH] add sense support
 
 ---
  arch/arm64/boot/dts/freescale/Makefile        |   1 +
  .../dts/freescale/imx91-var-som-sense.dts     |  13 +
- .../dts/freescale/imx91-var-som-sense.dtsi    | 598 ++++++++++++++++++
- 3 files changed, 612 insertions(+)
+ .../dts/freescale/imx91-var-som-sense.dtsi    | 599 ++++++++++++++++++
+ 3 files changed, 613 insertions(+)
  create mode 100644 arch/arm64/boot/dts/freescale/imx91-var-som-sense.dts
  create mode 100644 arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi
 
@@ -44,10 +44,10 @@ index 000000000000..4343d2319bae
 +};
 diff --git a/arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi b/arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi
 new file mode 100644
-index 000000000000..90728e83ac1a
+index 000000000000..0fc0ba92cbe9
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi
-@@ -0,0 +1,598 @@
+@@ -0,0 +1,599 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright 2024 NXP
@@ -140,6 +140,7 @@ index 000000000000..90728e83ac1a
 +			compatible = "ethernet-phy-ieee802.3-c22";
 +			reg = <5>;
 +			eee-broken-1000t;
++			phy-mode = "rgmii-rxid";
 +			reset-gpios = <&gpio4 28 GPIO_ACTIVE_LOW>;
 +			reset-assert-us = <15000>;
 +			reset-deassert-us = <100000>;

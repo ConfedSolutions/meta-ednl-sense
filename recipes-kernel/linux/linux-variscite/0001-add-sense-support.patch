@@ -1,15 +1,19 @@
-From 15473d533a52f4a0842e557323b735e38ffa21fa Mon Sep 17 00:00:00 2001
+From 30ca7632694a98dd6a501d2d030bef79a0f77c1f Mon Sep 17 00:00:00 2001
 From: "N. van IJzendoorn" <nick.vanijzendoorn@confed.eu>
-Date: Tue, 17 Mar 2026 13:54:25 +0100
+Date: Wed, 18 Mar 2026 16:24:41 +0100
 Subject: [PATCH] add sense support
 
 ---
  arch/arm64/boot/dts/freescale/Makefile        |   1 +
  .../dts/freescale/imx91-var-som-sense.dts     |  13 +
- .../dts/freescale/imx91-var-som-sense.dtsi    | 594 ++++++++++++++++++
- 3 files changed, 608 insertions(+)
+ .../dts/freescale/imx91-var-som-sense.dtsi    | 596 ++++++++++++++++++
+ drivers/input/touchscreen/Kconfig             |  13 +
+ drivers/input/touchscreen/Makefile            |   3 +-
+ drivers/input/touchscreen/cf1124.c            | 355 +++++++++++
+ 6 files changed, 980 insertions(+), 1 deletion(-)
  create mode 100644 arch/arm64/boot/dts/freescale/imx91-var-som-sense.dts
  create mode 100644 arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi
+ create mode 100644 drivers/input/touchscreen/cf1124.c
 
 diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
 index 7a47bceebb2a..73cd368b39ca 100644
@@ -44,10 +48,10 @@ index 000000000000..4343d2319bae
 +};
 diff --git a/arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi b/arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi
 new file mode 100644
-index 000000000000..bcea3ed09743
+index 000000000000..86e226df794c
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi
-@@ -0,0 +1,594 @@
+@@ -0,0 +1,596 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright 2024 NXP
@@ -343,6 +347,11 @@ index 000000000000..bcea3ed09743
 +			MX91_PAD_GPIO_IO22__GPIO2_IO22			0x11e /* out: SHDN */
 +			MX91_PAD_DAP_TDO_TRACESWO__GPIO3_IO31		0x51e /* out: WL_RESET */ 
 +			MX91_PAD_DAP_TMS_SWDIO__GPIO3_IO29		0x51e /* out: WL_PWRKEY */
++		>;
++	};
++
++	pinctrl_captouch: captouchgrp {
++		fsl,pins = <
 +			MX91_PAD_SD2_DATA3__GPIO3_IO6			0x51e /* out: TOUCH_RESETn */
 +			MX91_PAD_CCM_CLKO2__GPIO3_IO27			0x31e /* in:  TOUCH_INTERRUPTn */
 +		>;
@@ -482,19 +491,16 @@ index 000000000000..bcea3ed09743
 +	status = "okay";
 +
 +	/* Capacitive touch controller */
-+	ft5x06_ts: ft5x06_ts@38 {
-+		compatible = "edt,edt-ft5206";
-+		reg = <0x38>;
-+		/* pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_captouch>; */
++	cf1124: cf1124_ts@55 {
++		compatible = "sitronix,cf1124";
++		reg = <0x55>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_captouch>;
++		reset-gpios = <&gpio3 6 GPIO_ACTIVE_LOW>;
 +		interrupt-parent = <&gpio3>;
 +		interrupts = <27 IRQ_TYPE_EDGE_FALLING>;
-+		touchscreen-size-x = <800>;
-+		touchscreen-size-y = <480>;
-+		touchscreen-inverted-x;
-+		touchscreen-inverted-y;
-+		wakeup-source;
-+		status = "disabled";
++		orientation = <270>;
++		status = "okay";
 +	};
 +
 +	/* USB Type-C Controller */
@@ -642,6 +648,410 @@ index 000000000000..bcea3ed09743
 +	status = "disabled";
 +};
 +
+diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
+index c3da0f365cb4..d939505e5b44 100644
+--- a/drivers/input/touchscreen/Kconfig
++++ b/drivers/input/touchscreen/Kconfig
+@@ -174,6 +174,19 @@ config TOUCHSCREEN_BU21029
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called bu21029_ts.
+ 
++config TOUCHSCREEN_CF1124
++	tristate "Sitronix CF1124 I2C Touchscreen support"
++	depends on I2C
++	help
++	  Say Y here if you have an Winstar touchscreen based
++	  on the Sitronix CF1124 family of controllers connected to
++	  your system.
++
++	  If unsure, say N.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called cf1124.
++
+ config TOUCHSCREEN_CHIPONE_ICN8318
+ 	tristate "chipone icn8318 touchscreen controller"
+ 	depends on GPIOLIB || COMPILE_TEST
+diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
+index 6b655c70572d..5fd5d593027a 100644
+--- a/drivers/input/touchscreen/Makefile
++++ b/drivers/input/touchscreen/Makefile
+@@ -20,6 +20,7 @@ obj-$(CONFIG_TOUCHSCREEN_ATMEL_MXT)	+= atmel_mxt_ts.o
+ obj-$(CONFIG_TOUCHSCREEN_AUO_PIXCIR)	+= auo-pixcir-ts.o
+ obj-$(CONFIG_TOUCHSCREEN_BU21013)	+= bu21013_ts.o
+ obj-$(CONFIG_TOUCHSCREEN_BU21029)	+= bu21029_ts.o
++obj-$(CONFIG_TOUCHSCREEN_CF1124)	+= cf1124.o
+ obj-$(CONFIG_TOUCHSCREEN_CHIPONE_ICN8318)	+= chipone_icn8318.o
+ obj-$(CONFIG_TOUCHSCREEN_CHIPONE_ICN8505)	+= chipone_icn8505.o
+ obj-$(CONFIG_TOUCHSCREEN_CY8CTMA140)	+= cy8ctma140.o
+@@ -122,4 +123,4 @@ obj-$(CONFIG_TOUCHSCREEN_ZINITIX)	+= zinitix.o
+ obj-$(CONFIG_TOUCHSCREEN_HIMAX_HX83112B)	+= himax_hx83112b.o
+ obj-$(CONFIG_TOUCHSCREEN_FTS) += focaltech_ts.o
+ focaltech_ts-y := focaltech_core.o
+-focaltech_ts-y += focaltech_i2c.o
+\ No newline at end of file
++focaltech_ts-y += focaltech_i2c.o
+diff --git a/drivers/input/touchscreen/cf1124.c b/drivers/input/touchscreen/cf1124.c
+new file mode 100644
+index 000000000000..3ae7ec181531
+--- /dev/null
++++ b/drivers/input/touchscreen/cf1124.c
+@@ -0,0 +1,355 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2012 Simon Budig, <simon.budig@kernelconcepts.de>
++ * Daniel Wagener <daniel.wagener@kernelconcepts.de> (M09 firmware support)
++ * Lothar Waßmann <LW@KARO-electronics.de> (DT support)
++ * Dario Binacchi <dario.binacchi@amarulasolutions.com> (regmap support)
++ */
++
++/*
++ * This is a driver for the EDT "Polytouch" family of touch controllers
++ * based on the FocalTech FT5x06 line of chips.
++ *
++ * Development of this driver has been sponsored by Glyn:
++ *    http://www.glyn.com/Products/Displays
++ */
++
++#include <linux/delay.h>
++#include <linux/gpio/consumer.h>
++#include <linux/i2c.h>
++#include <linux/interrupt.h>
++#include <linux/input.h>
++#include <linux/input/touchscreen.h>
++#include <linux/irq.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/property.h>
++#include <linux/ratelimit.h>
++
++#include <asm/unaligned.h>
++
++#define CF1124_MAX_FINGERS			2
++
++#define CF1124_REG_FW_VERSION			0x00
++#define CF1124_REG_RESOLUTION_HIGH		0x04
++#define CF1124_REG_FW_REVISION			0x0c
++#define CF1124_REG_FINGERS			0x10
++#define CF1124_REG_MAX_NUM_TOUCHES		0x3f
++#define CF1124_REG_MISC_CONTROL			0xf1
++#define CF1124_REG_SMART_WAKEUP			0xf2
++#define CF1124_REG_CHIP_ID			0xf4
++
++#define START_DELAY_MS				150
++#define STOP_DELAY_MIN_US			10000
++#define STOP_DELAY_MAX_US			15000
++
++struct cf1124_ts_data {
++	struct i2c_client *client;
++	struct input_dev *in_dev;
++	struct touchscreen_properties props;
++	struct gpio_desc *reset_gpio;
++	u32 orientation;
++	u32 max_points;
++	u32 max_x;
++	u32 max_y;
++	u8 chip_id;
++	u8 version[5];
++	u8 last_touched[CF1124_MAX_FINGERS];
++};
++
++static irqreturn_t cf1124_touch_soft_irq(int irq, void *dev_id)
++{
++	struct cf1124_ts_data *cf1124 = dev_id;
++	struct i2c_client *i2c = cf1124->client;
++	struct device *dev = &i2c->dev;
++	u8 buffer[2 + (4 * CF1124_MAX_FINGERS)];
++	int bogus_read = 0;
++	int error, idx;
++
++	memset(buffer, 0, sizeof(buffer));
++	error = i2c_smbus_read_i2c_block_data(i2c, CF1124_REG_FINGERS, 
++					      sizeof(buffer), buffer);
++	if (error) {
++		dev_err_ratelimited(dev, "unable to fetch data, error: %d\n",
++				    error);
++		goto out;
++	}
++
++	for (idx = 0; idx < cf1124->max_points; idx++) {
++		// check if a touch is present
++		if (buffer[(4 * idx) + 2] & 0x80) {
++			// readout the touch data
++			int x = ((buffer[(4 * idx) + 2] & 0x70) << 4)
++				| (buffer[(4 * idx) + 3]);
++			int y = ((buffer[(4 * idx) + 2] & 0x07) << 8)
++				| (buffer[(4 * idx) + 4]);
++
++			// rotate the coordinates to reality for our product
++			switch (cf1124->orientation) {
++			default:
++			case 0:
++				// nothing to do...
++				break;
++			
++			case 90:
++				swap(x, y);
++				y = cf1124->max_y - y;
++				break;
++			
++			case 180:
++				x = cf1124->max_x - x;
++				y = cf1124->max_y - y;
++				break;
++			
++			case 270:
++				swap(x, y);
++				x = cf1124->max_x - x;
++				break;
++			}
++
++			// mark that a touch is being made
++			cf1124->last_touched[idx] = 1;
++
++			// send the received data to the input device
++			touchscreen_report_pos(cf1124->in_dev, &cf1124->props,
++					       x, y, false);
++			input_report_abs(cf1124->in_dev, ABS_PRESSURE, 1);
++			input_report_key(cf1124->in_dev, BTN_TOUCH, 1);
++			input_sync(cf1124->in_dev);
++		}
++		else if (cf1124->last_touched[idx])
++		{
++			// mark that the touch is released
++			cf1124->last_touched[idx] = 0;
++
++			// send the release to the input device
++			input_report_abs(cf1124->in_dev, ABS_PRESSURE, 0);
++			input_report_key(cf1124->in_dev, BTN_TOUCH, 0);
++			input_sync(cf1124->in_dev);
++		}
++		else if (idx == 0)
++			bogus_read = 1;
++	}
++	
++	if (bogus_read) {
++		dev_warn(dev, "useless interrupt received\n");
++	}
++
++out:
++	return IRQ_HANDLED;
++}
++
++static int cf1124_start_chip(struct input_dev *dev)
++{
++	struct cf1124_ts_data *cf1124 = input_get_drvdata(dev);
++	struct i2c_client *i2c = cf1124->client;
++	int res, x, y;
++	u8 resolution[3];
++
++	// take the chip out of reset
++	gpiod_set_value_cansleep(cf1124->reset_gpio, 0);
++	msleep(START_DELAY_MS);
++
++	// read the chipID
++	res = i2c_smbus_read_byte_data(i2c, CF1124_REG_CHIP_ID);
++	if (res < 0) {
++		dev_err(&i2c->dev, "failed to read chip ID\n");
++		goto err_out;
++	}
++	
++	cf1124->chip_id = res;
++	dev_info(&i2c->dev, "chip id: 0x%02x\n", res);
++
++	// read the firmware version information
++	res = i2c_smbus_read_byte_data(i2c, CF1124_REG_FW_VERSION);
++	if (res < 0) {
++		dev_err(&i2c->dev, "failed to read firmware version\n");
++		goto err_out;
++	}
++	
++	cf1124->version[0] = res;
++
++	res = i2c_smbus_read_i2c_block_data(i2c, CF1124_REG_FW_REVISION, 
++						sizeof(cf1124->version) - 1,
++						cf1124->version + 1);
++	if (res < 0) {
++		dev_err(&i2c->dev, "failed to read firmware revision\n");
++		goto err_out;
++	}
++	
++	dev_info(&i2c->dev, "firmware version: %d.%d.%d.%d.%d\n", 
++		cf1124->version[0], cf1124->version[4], cf1124->version[3], 
++		cf1124->version[2], cf1124->version[1]);
++
++	// read the maximum supported touches
++	res = i2c_smbus_read_byte_data(i2c, CF1124_REG_MAX_NUM_TOUCHES);
++	if (res < 0) {
++		dev_err(&i2c->dev, "failed to read max number of touches\n");
++		goto err_out;
++	}
++	
++	if (res > CF1124_MAX_FINGERS)
++		res = CF1124_MAX_FINGERS;
++	cf1124->max_points = res;
++	dev_info(&i2c->dev, "maximum num touches: %d\n", res);
++	
++	// read the configured resolution
++	res = i2c_smbus_read_i2c_block_data(i2c, CF1124_REG_RESOLUTION_HIGH, 
++						sizeof(resolution),
++						resolution);
++	if (res < 0) {
++		dev_err(&i2c->dev, "failed to read resolution\n");
++		goto err_out;
++	}
++	
++	// convert the data to the resolution
++	x = ((resolution[0] & 0x70) << 4)
++		| (resolution[1]);
++	y = ((resolution[0] & 0x07) << 8)
++		| (resolution[2]);
++
++	// rotate if needed
++	if (cf1124->orientation == 90 || cf1124->orientation == 270) {
++		swap(x, y);
++	}
++
++	// store the resolution
++	cf1124->max_x = x;
++	cf1124->max_y = y;
++	dev_info(&i2c->dev, "resolution: X = %d, Y = %d\n", x, y);
++
++	enable_irq(cf1124->client->irq);
++
++	return 0;
++
++err_out:
++	// put the chip in reset
++	gpiod_set_value_cansleep(cf1124->reset_gpio, 1);
++	usleep_range(STOP_DELAY_MIN_US, STOP_DELAY_MAX_US);
++
++	return res;
++}
++
++static void cf1124_stop_chip(struct input_dev *dev)
++{
++	struct cf1124_ts_data *cf1124 = input_get_drvdata(dev);
++
++	// disable the interrupt
++	disable_irq(cf1124->client->irq);
++
++	// reset the chip
++	gpiod_set_value_cansleep(cf1124->reset_gpio, 1);
++	usleep_range(STOP_DELAY_MIN_US, STOP_DELAY_MAX_US);
++}
++
++static int cf1124_ts_probe(struct i2c_client *client)
++{
++	struct device *dev = &client->dev;
++	struct cf1124_ts_data *cf1124;
++	struct input_dev *in_dev;
++	unsigned long irq_flags;
++	int error;
++
++	if (!i2c_check_functionality(client->adapter,
++				     I2C_FUNC_SMBUS_BYTE_DATA |
++				     I2C_FUNC_SMBUS_WRITE_BYTE |
++				     I2C_FUNC_SMBUS_WRITE_BYTE_DATA |
++				     I2C_FUNC_SMBUS_READ_I2C_BLOCK)) {
++		dev_err(dev, "I2C functionality support is not sufficient\n");
++		return -EIO;
++	}
++
++	cf1124 = devm_kzalloc(dev, sizeof(*cf1124), GFP_KERNEL);
++	if (!cf1124)
++		return -ENOMEM;
++
++	error = device_property_read_u32(dev, "orientation", &cf1124->orientation);
++	if (error) {
++		dev_err(dev, "invalid 'orientation' supplied: %d\n", error);
++		return error;
++	}
++
++	cf1124->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
++	if (IS_ERR(cf1124->reset_gpio))
++		return dev_err_probe(dev, PTR_ERR(cf1124->reset_gpio),
++				     "failed to acquire 'reset' gpio\n");
++	else
++		gpiod_set_consumer_name(cf1124->reset_gpio, "cs1124 reset");
++
++	in_dev = devm_input_allocate_device(dev);
++	if (!in_dev) {
++		dev_err(dev, "unable to allocate input device\n");
++		return -ENOMEM;
++	}
++
++	cf1124->client = client;
++	cf1124->in_dev = in_dev;
++
++	input_set_drvdata(in_dev, cf1124);
++
++	// read the chip information
++	error = cf1124_start_chip(in_dev);
++	if (error) {
++		dev_err(dev, "failed to read chip information: %d\n", error);
++		return error;
++	}
++	cf1124_stop_chip(in_dev);
++
++	in_dev->name		= "cf1124";
++	in_dev->id.bustype	= BUS_I2C;
++	in_dev->open		= cf1124_start_chip;
++	in_dev->close		= cf1124_stop_chip;
++
++	input_set_capability(in_dev, EV_KEY, BTN_TOUCH);
++	input_set_abs_params(in_dev, ABS_X, 0, cf1124->max_x, 0, 0);
++	input_set_abs_params(in_dev, ABS_Y, 0, cf1124->max_y, 0, 0);
++	input_set_abs_params(in_dev, ABS_PRESSURE, 0, 1, 0, 0);
++	touchscreen_parse_properties(in_dev, false, &cf1124->props);
++
++	irq_flags = irq_get_trigger_type(client->irq);
++	error = devm_request_threaded_irq(dev, client->irq, NULL,
++					cf1124_touch_soft_irq,
++					(irq_flags | IRQF_ONESHOT | IRQF_NO_AUTOEN),
++					"cf1124", cf1124);
++	if (error) {
++		dev_err(dev, "unable to request touch irq: %d\n", error);
++		return error;
++	}
++
++	error = input_register_device(in_dev);
++	if (error) {
++		dev_err(dev, "unable to register input device: %d\n", error);
++		return error;
++	}
++
++	i2c_set_clientdata(client, cf1124);
++
++	return 0;
++}
++
++static const struct i2c_device_id cf1124_ts_id[] = {
++	{ .name = "cf1124" },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(i2c, cf1124_ts_id);
++
++static const struct of_device_id cf1124_of_match[] = {
++	{ .compatible = "sitronix,cf1124" },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, cf1124_of_match);
++
++static struct i2c_driver cf1124_ts_driver = {
++	.driver = {
++		.name = "cf1124",
++		.of_match_table = cf1124_of_match
++	},
++	.id_table = cf1124_ts_id,
++	.probe    = cf1124_ts_probe
++};
++
++module_i2c_driver(cf1124_ts_driver);
++
++MODULE_AUTHOR("Nick v. IJzendoorn <nick.vanijzendoorn@confed.eu>");
++MODULE_DESCRIPTION("Sitronix CF1124 I2C Touchscreen Driver");
++MODULE_LICENSE("GPL v2");
 -- 
 2.43.0
 

@@ -9,7 +9,7 @@ PV = "0.1"
 SRC_URI = "git://github.com/ConfedSolutions/winstar-touch-sense;protocol=https;branch=main \
 "
 
-SRCREV = "410329a2eb13ab72830079523d8a2913dec72b7f"
+SRCREV = "7e70000c08c39e6514bbf9d72457fd61cfa0dde7"
 
 S = "${WORKDIR}/git"
 

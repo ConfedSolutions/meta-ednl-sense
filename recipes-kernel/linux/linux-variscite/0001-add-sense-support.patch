@@ -1,6 +1,6 @@
-From 30ca7632694a98dd6a501d2d030bef79a0f77c1f Mon Sep 17 00:00:00 2001
+From ff7e083c1c99ec655ae42fc30e562b1b107eec6c Mon Sep 17 00:00:00 2001
 From: "N. van IJzendoorn" <nick.vanijzendoorn@confed.eu>
-Date: Wed, 18 Mar 2026 16:24:41 +0100
+Date: Wed, 18 Mar 2026 17:18:15 +0100
 Subject: [PATCH] add sense support
 
 ---
@@ -9,8 +9,8 @@ Subject: [PATCH] add sense support
  .../dts/freescale/imx91-var-som-sense.dtsi    | 596 ++++++++++++++++++
  drivers/input/touchscreen/Kconfig             |  13 +
  drivers/input/touchscreen/Makefile            |   3 +-
- drivers/input/touchscreen/cf1124.c            | 355 +++++++++++
- 6 files changed, 980 insertions(+), 1 deletion(-)
+ drivers/input/touchscreen/cf1124.c            | 361 +++++++++++
+ 6 files changed, 986 insertions(+), 1 deletion(-)
  create mode 100644 arch/arm64/boot/dts/freescale/imx91-var-som-sense.dts
  create mode 100644 arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi
  create mode 100644 drivers/input/touchscreen/cf1124.c
@@ -693,10 +693,10 @@ index 6b655c70572d..5fd5d593027a 100644
 +focaltech_ts-y += focaltech_i2c.o
 diff --git a/drivers/input/touchscreen/cf1124.c b/drivers/input/touchscreen/cf1124.c
 new file mode 100644
-index 000000000000..3ae7ec181531
+index 000000000000..6a174043e9e5
 --- /dev/null
 +++ b/drivers/input/touchscreen/cf1124.c
-@@ -0,0 +1,355 @@
+@@ -0,0 +1,361 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright (C) 2012 Simon Budig, <simon.budig@kernelconcepts.de>
@@ -747,6 +747,7 @@ index 000000000000..3ae7ec181531
 +	struct input_dev *in_dev;
 +	struct touchscreen_properties props;
 +	struct gpio_desc *reset_gpio;
++	u32 probing;
 +	u32 orientation;
 +	u32 max_points;
 +	u32 max_x;
@@ -917,7 +918,8 @@ index 000000000000..3ae7ec181531
 +	cf1124->max_y = y;
 +	dev_info(&i2c->dev, "resolution: X = %d, Y = %d\n", x, y);
 +
-+	enable_irq(cf1124->client->irq);
++	if (!cf1124->probing)
++		enable_irq(cf1124->client->irq);
 +
 +	return 0;
 +
@@ -934,7 +936,8 @@ index 000000000000..3ae7ec181531
 +	struct cf1124_ts_data *cf1124 = input_get_drvdata(dev);
 +
 +	// disable the interrupt
-+	disable_irq(cf1124->client->irq);
++	if (!cf1124->probing)
++		disable_irq(cf1124->client->irq);
 +
 +	// reset the chip
 +	gpiod_set_value_cansleep(cf1124->reset_gpio, 1);
@@ -961,6 +964,7 @@ index 000000000000..3ae7ec181531
 +	cf1124 = devm_kzalloc(dev, sizeof(*cf1124), GFP_KERNEL);
 +	if (!cf1124)
 +		return -ENOMEM;
++	cf1124->probing = 1;
 +
 +	error = device_property_read_u32(dev, "orientation", &cf1124->orientation);
 +	if (error) {
@@ -1022,6 +1026,8 @@ index 000000000000..3ae7ec181531
 +	}
 +
 +	i2c_set_clientdata(client, cf1124);
++	
++	cf1124->probing = 0;
 +
 +	return 0;
 +}

@@ -65,6 +65,7 @@ RDEPENDS:${PN}-devel = "\
 
 RDEPENDS:${PN}-display = "\
     winstar-display \
+    winstar-touch \
 "
 
 RDEPENDS:${PN}-update = "\

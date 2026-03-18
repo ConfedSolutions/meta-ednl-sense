@@ -1,13 +1,13 @@
-From 8a7f63903e94462c067afd21df9fb04970a26a1a Mon Sep 17 00:00:00 2001
+From 15473d533a52f4a0842e557323b735e38ffa21fa Mon Sep 17 00:00:00 2001
 From: "N. van IJzendoorn" <nick.vanijzendoorn@confed.eu>
-Date: Thu, 12 Mar 2026 11:13:46 +0100
+Date: Tue, 17 Mar 2026 13:54:25 +0100
 Subject: [PATCH] add sense support
 
 ---
  arch/arm64/boot/dts/freescale/Makefile        |   1 +
  .../dts/freescale/imx91-var-som-sense.dts     |  13 +
- .../dts/freescale/imx91-var-som-sense.dtsi    | 598 ++++++++++++++++++
- 3 files changed, 612 insertions(+)
+ .../dts/freescale/imx91-var-som-sense.dtsi    | 594 ++++++++++++++++++
+ 3 files changed, 608 insertions(+)
  create mode 100644 arch/arm64/boot/dts/freescale/imx91-var-som-sense.dts
  create mode 100644 arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi
 
@@ -44,10 +44,10 @@ index 000000000000..4343d2319bae
 +};
 diff --git a/arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi b/arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi
 new file mode 100644
-index 000000000000..ee84311ee382
+index 000000000000..bcea3ed09743
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi
-@@ -0,0 +1,598 @@
+@@ -0,0 +1,594 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright 2024 NXP
@@ -261,7 +261,7 @@ index 000000000000..ee84311ee382
 +		"CAN2_TX",
 +		"CAN2_RX",
 +		"I2C1_09H_INT",
-+		"NC",
++		"DISPLAY_TOUCH_RST_N",
 +		"NC",
 +		"SD1_CLK (eMMC)",
 +		"SD1_CMD (eMMC)",
@@ -343,11 +343,7 @@ index 000000000000..ee84311ee382
 +			MX91_PAD_GPIO_IO22__GPIO2_IO22			0x11e /* out: SHDN */
 +			MX91_PAD_DAP_TDO_TRACESWO__GPIO3_IO31		0x51e /* out: WL_RESET */ 
 +			MX91_PAD_DAP_TMS_SWDIO__GPIO3_IO29		0x51e /* out: WL_PWRKEY */
-+		>;
-+	};
-+
-+	pinctrl_captouch: captouchgrp {
-+		fsl,pins = <
++			MX91_PAD_SD2_DATA3__GPIO3_IO6			0x51e /* out: TOUCH_RESETn */
 +			MX91_PAD_CCM_CLKO2__GPIO3_IO27			0x31e /* in:  TOUCH_INTERRUPTn */
 +		>;
 +	};
@@ -489,8 +485,8 @@ index 000000000000..ee84311ee382
 +	ft5x06_ts: ft5x06_ts@38 {
 +		compatible = "edt,edt-ft5206";
 +		reg = <0x38>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_captouch>;
++		/* pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_captouch>; */
 +		interrupt-parent = <&gpio3>;
 +		interrupts = <27 IRQ_TYPE_EDGE_FALLING>;
 +		touchscreen-size-x = <800>;

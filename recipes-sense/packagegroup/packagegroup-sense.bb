@@ -66,6 +66,7 @@ RDEPENDS:${PN}-devel = "\
 RDEPENDS:${PN}-display = "\
     winstar-display \
     winstar-touch \
+    evtest \
 "
 
 RDEPENDS:${PN}-update = "\

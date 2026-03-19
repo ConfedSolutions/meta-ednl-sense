@@ -1,6 +1,6 @@
-From ff7e083c1c99ec655ae42fc30e562b1b107eec6c Mon Sep 17 00:00:00 2001
+From d2fcdf3f1932edfd20a9bf7ed3dd4fde2e92eac0 Mon Sep 17 00:00:00 2001
 From: "N. van IJzendoorn" <nick.vanijzendoorn@confed.eu>
-Date: Wed, 18 Mar 2026 17:18:15 +0100
+Date: Thu, 19 Mar 2026 11:17:45 +0100
 Subject: [PATCH] add sense support
 
 ---
@@ -9,8 +9,8 @@ Subject: [PATCH] add sense support
  .../dts/freescale/imx91-var-som-sense.dtsi    | 596 ++++++++++++++++++
  drivers/input/touchscreen/Kconfig             |  13 +
  drivers/input/touchscreen/Makefile            |   3 +-
- drivers/input/touchscreen/cf1124.c            | 361 +++++++++++
- 6 files changed, 986 insertions(+), 1 deletion(-)
+ drivers/input/touchscreen/cf1124.c            | 413 ++++++++++++
+ 6 files changed, 1038 insertions(+), 1 deletion(-)
  create mode 100644 arch/arm64/boot/dts/freescale/imx91-var-som-sense.dts
  create mode 100644 arch/arm64/boot/dts/freescale/imx91-var-som-sense.dtsi
  create mode 100644 drivers/input/touchscreen/cf1124.c
@@ -693,24 +693,17 @@ index 6b655c70572d..5fd5d593027a 100644
 +focaltech_ts-y += focaltech_i2c.o
 diff --git a/drivers/input/touchscreen/cf1124.c b/drivers/input/touchscreen/cf1124.c
 new file mode 100644
-index 000000000000..6a174043e9e5
+index 000000000000..6fd73ca2d4e0
 --- /dev/null
 +++ b/drivers/input/touchscreen/cf1124.c
-@@ -0,0 +1,361 @@
+@@ -0,0 +1,413 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * Copyright (C) 2012 Simon Budig, <simon.budig@kernelconcepts.de>
-+ * Daniel Wagener <daniel.wagener@kernelconcepts.de> (M09 firmware support)
-+ * Lothar Waßmann <LW@KARO-electronics.de> (DT support)
-+ * Dario Binacchi <dario.binacchi@amarulasolutions.com> (regmap support)
++ * Copyright (C) 2026 Confed Solutions, <nick.vanijzendoorn@confed.eu>
 + */
 +
 +/*
-+ * This is a driver for the EDT "Polytouch" family of touch controllers
-+ * based on the FocalTech FT5x06 line of chips.
-+ *
-+ * Development of this driver has been sponsored by Glyn:
-+ *    http://www.glyn.com/Products/Displays
++ * This is a driver for the Sitronix CF1124 family of touch controllers.
 + */
 +
 +#include <linux/delay.h>
@@ -747,7 +740,6 @@ index 000000000000..6a174043e9e5
 +	struct input_dev *in_dev;
 +	struct touchscreen_properties props;
 +	struct gpio_desc *reset_gpio;
-+	u32 probing;
 +	u32 orientation;
 +	u32 max_points;
 +	u32 max_x;
@@ -769,7 +761,7 @@ index 000000000000..6a174043e9e5
 +	memset(buffer, 0, sizeof(buffer));
 +	error = i2c_smbus_read_i2c_block_data(i2c, CF1124_REG_FINGERS, 
 +					      sizeof(buffer), buffer);
-+	if (error) {
++	if (error < 0) {
 +		dev_err_ratelimited(dev, "unable to fetch data, error: %d\n",
 +				    error);
 +		goto out;
@@ -839,16 +831,11 @@ index 000000000000..6a174043e9e5
 +	return IRQ_HANDLED;
 +}
 +
-+static int cf1124_start_chip(struct input_dev *dev)
++static int cf1124_read_configuration(struct cf1124_ts_data *cf1124, int log_info)
 +{
-+	struct cf1124_ts_data *cf1124 = input_get_drvdata(dev);
 +	struct i2c_client *i2c = cf1124->client;
 +	int res, x, y;
 +	u8 resolution[3];
-+
-+	// take the chip out of reset
-+	gpiod_set_value_cansleep(cf1124->reset_gpio, 0);
-+	msleep(START_DELAY_MS);
 +
 +	// read the chipID
 +	res = i2c_smbus_read_byte_data(i2c, CF1124_REG_CHIP_ID);
@@ -858,7 +845,8 @@ index 000000000000..6a174043e9e5
 +	}
 +	
 +	cf1124->chip_id = res;
-+	dev_info(&i2c->dev, "chip id: 0x%02x\n", res);
++	if (log_info)
++		dev_info(&i2c->dev, "chip id: 0x%02x\n", res);
 +
 +	// read the firmware version information
 +	res = i2c_smbus_read_byte_data(i2c, CF1124_REG_FW_VERSION);
@@ -877,9 +865,10 @@ index 000000000000..6a174043e9e5
 +		goto err_out;
 +	}
 +	
-+	dev_info(&i2c->dev, "firmware version: %d.%d.%d.%d.%d\n", 
-+		cf1124->version[0], cf1124->version[4], cf1124->version[3], 
-+		cf1124->version[2], cf1124->version[1]);
++	if (log_info)
++		dev_info(&i2c->dev, "firmware version: %d.%d.%d.%d.%d\n", 
++			cf1124->version[0], cf1124->version[4], cf1124->version[3], 
++			cf1124->version[2], cf1124->version[1]);
 +
 +	// read the maximum supported touches
 +	res = i2c_smbus_read_byte_data(i2c, CF1124_REG_MAX_NUM_TOUCHES);
@@ -891,7 +880,8 @@ index 000000000000..6a174043e9e5
 +	if (res > CF1124_MAX_FINGERS)
 +		res = CF1124_MAX_FINGERS;
 +	cf1124->max_points = res;
-+	dev_info(&i2c->dev, "maximum num touches: %d\n", res);
++	if (log_info)
++		dev_info(&i2c->dev, "maximum num touches: %d\n", res);
 +	
 +	// read the configured resolution
 +	res = i2c_smbus_read_i2c_block_data(i2c, CF1124_REG_RESOLUTION_HIGH, 
@@ -916,10 +906,34 @@ index 000000000000..6a174043e9e5
 +	// store the resolution
 +	cf1124->max_x = x;
 +	cf1124->max_y = y;
-+	dev_info(&i2c->dev, "resolution: X = %d, Y = %d\n", x, y);
++	if (log_info)
++		dev_info(&i2c->dev, "resolution: X = %d, Y = %d\n", x, y);
++	
++	return 0;
 +
-+	if (!cf1124->probing)
-+		enable_irq(cf1124->client->irq);
++err_out:
++	return res;
++}
++
++static int cf1124_start_chip(struct input_dev *dev)
++{
++	struct cf1124_ts_data *cf1124 = input_get_drvdata(dev);
++	struct i2c_client *i2c = cf1124->client;
++	int res;
++
++	// take the chip out of reset
++	gpiod_set_value_cansleep(cf1124->reset_gpio, 0);
++	msleep(START_DELAY_MS);
++
++	// read the chip configuration
++	res = cf1124_read_configuration(cf1124, 0);
++	if (res < 0) {
++		dev_err(&i2c->dev, "failed to read chip configuration\n");
++		goto err_out;
++	}
++
++	// enable the interrupt
++	enable_irq(cf1124->client->irq);
 +
 +	return 0;
 +
@@ -936,8 +950,7 @@ index 000000000000..6a174043e9e5
 +	struct cf1124_ts_data *cf1124 = input_get_drvdata(dev);
 +
 +	// disable the interrupt
-+	if (!cf1124->probing)
-+		disable_irq(cf1124->client->irq);
++	disable_irq(cf1124->client->irq);
 +
 +	// reset the chip
 +	gpiod_set_value_cansleep(cf1124->reset_gpio, 1);
@@ -964,7 +977,6 @@ index 000000000000..6a174043e9e5
 +	cf1124 = devm_kzalloc(dev, sizeof(*cf1124), GFP_KERNEL);
 +	if (!cf1124)
 +		return -ENOMEM;
-+	cf1124->probing = 1;
 +
 +	error = device_property_read_u32(dev, "orientation", &cf1124->orientation);
 +	if (error) {
@@ -990,13 +1002,22 @@ index 000000000000..6a174043e9e5
 +
 +	input_set_drvdata(in_dev, cf1124);
 +
++	// take the chip out of reset
++	gpiod_set_value_cansleep(cf1124->reset_gpio, 0);
++	msleep(START_DELAY_MS);
++
 +	// read the chip information
-+	error = cf1124_start_chip(in_dev);
++	error = cf1124_read_configuration(cf1124, 1);
++	
++	// reset the chip
++	gpiod_set_value_cansleep(cf1124->reset_gpio, 1);
++	usleep_range(STOP_DELAY_MIN_US, STOP_DELAY_MAX_US);
++	
++	// check if there was an error reading the configuration
 +	if (error) {
 +		dev_err(dev, "failed to read chip information: %d\n", error);
 +		return error;
 +	}
-+	cf1124_stop_chip(in_dev);
 +
 +	in_dev->name		= "cf1124";
 +	in_dev->id.bustype	= BUS_I2C;
@@ -1026,11 +1047,40 @@ index 000000000000..6a174043e9e5
 +	}
 +
 +	i2c_set_clientdata(client, cf1124);
-+	
-+	cf1124->probing = 0;
 +
 +	return 0;
 +}
++
++static int cf1124_suspend(struct device *dev)
++{
++	struct i2c_client *i2c = to_i2c_client(dev);
++	struct cf1124_ts_data *cf1124 = i2c_get_clientdata(i2c);
++
++	if (!device_may_wakeup(dev)) {
++		mutex_lock(&cf1124->in_dev->mutex);
++		if (input_device_enabled(cf1124->in_dev))
++			cf1124_stop_chip(cf1124->in_dev);
++		mutex_unlock(&cf1124->in_dev->mutex);
++	}
++
++	return 0;
++}
++
++static int cf1124_resume(struct device *dev)
++{
++	struct i2c_client *i2c = to_i2c_client(dev);
++	struct cf1124_ts_data *cf1124 = i2c_get_clientdata(i2c);
++
++	if (!device_may_wakeup(dev)) {
++		mutex_lock(&cf1124->in_dev->mutex);
++		if (input_device_enabled(cf1124->in_dev))
++			cf1124_start_chip(cf1124->in_dev);
++		mutex_unlock(&cf1124->in_dev->mutex);
++	}
++
++	return 0;
++}
++static DEFINE_SIMPLE_DEV_PM_OPS(cf1124_pm_ops, cf1124_suspend, cf1124_resume);
 +
 +static const struct i2c_device_id cf1124_ts_id[] = {
 +	{ .name = "cf1124" },
@@ -1047,7 +1097,8 @@ index 000000000000..6a174043e9e5
 +static struct i2c_driver cf1124_ts_driver = {
 +	.driver = {
 +		.name = "cf1124",
-+		.of_match_table = cf1124_of_match
++		.of_match_table = of_match_ptr(cf1124_of_match),
++		.pm		= pm_sleep_ptr(&cf1124_pm_ops),
 +	},
 +	.id_table = cf1124_ts_id,
 +	.probe    = cf1124_ts_probe
@@ -1058,6 +1109,7 @@ index 000000000000..6a174043e9e5
 +MODULE_AUTHOR("Nick v. IJzendoorn <nick.vanijzendoorn@confed.eu>");
 +MODULE_DESCRIPTION("Sitronix CF1124 I2C Touchscreen Driver");
 +MODULE_LICENSE("GPL v2");
++
 -- 
 2.43.0
 
